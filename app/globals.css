@@ -1,26 +1,318 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Golden color palette */
+  --color-gold: var(--gold);
+  --color-gold-dark: var(--gold-dark);
+  --color-gold-light: var(--gold-light);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.141 0.005 285.823);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.141 0.005 285.823);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  
+  /* Golden accent colors - Using #cda96f */
+  --gold: #cda96f;
+  --gold-dark: #b8945a;
+  --gold-light: #e0c9a0;
+  --accent: var(--gold);
+  --accent-foreground: oklch(0.141 0.005 285.823);
+  
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  
+  /* Chart colors with gold */
+  --chart-1: var(--gold);
+  --chart-2: #d4b78a;
+  --chart-3: #bb9d6c;
+  --chart-4: oklch(0.8 0.01 286);
+  --chart-5: oklch(0.9 0.005 286);
+  
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.141 0.005 285.823);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: var(--gold-light);
+  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+.dark {
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.141 0.005 285.823);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  
+  /* Golden colors for dark mode */
+  --accent: var(--gold);
+  --accent-foreground: oklch(0.985 0 0);
+  
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 15%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
+  
+  /* Chart colors for dark mode with gold */
+  --chart-1: var(--gold);
+  --chart-2: #d4b78a;
+  --chart-3: #bb9d6c;
+  --chart-4: oklch(0.4 0.01 286);
+  --chart-5: oklch(0.3 0.005 286);
+  
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-accent: var(--gold);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 15%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
+}
+
+/* Custom styles for the dark fashion theme */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  /* Custom font styles for elegance */
+  .font-elegant {
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+  
+  /* Custom spacing for fashion layout */
+  .section-spacing {
+    @apply py-16 px-6;
+  }
+  
+  /* Product card styles */
+  .product-card {
+    @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg;
+  }
+  
+  /* Button styles with gold */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium transition-colors hover:bg-primary/90;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary bg-transparent px-6 py-3 rounded-md font-medium transition-colors hover:bg-primary hover:text-primary-foreground;
+  }
+  
+  .btn-gold {
+    @apply bg-gold text-white px-6 py-3 rounded-md font-medium transition-colors hover:bg-gold-dark;
+  }
+  
+  .btn-gold-outline {
+    @apply border border-gold text-gold bg-transparent px-6 py-3 rounded-md font-medium transition-colors hover:bg-gold hover:text-white;
+  }
+  
+  /* Navigation styles */
+  .nav-link {
+    @apply text-foreground/80 hover:text-gold transition-colors font-medium;
+  }
+  
+  /* Hero section gradient */
+  .hero-gradient {
+    background: linear-gradient(135deg, oklch(0.141 0.005 285.823) 0%, oklch(0.21 0.006 285.885) 100%);
+  }
+  
+  /* Text emphasis with gold */
+  .text-emphasis {
+    @apply text-gold font-semibold;
+  }
+  
+  /* Golden divider */
+  .divider-gold {
+    @apply w-12 h-0.5 bg-gold my-4;
+  }
+  
+  /* Golden badge */
+  .badge-gold {
+    @apply bg-gold text-white px-3 py-1 rounded-full text-sm font-medium;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Golden utility classes */
+@layer utilities {
+  .text-gold {
+    color: var(--gold);
+  }
+  
+  .bg-gold {
+    background-color: var(--gold);
+  }
+  
+  .border-gold {
+    border-color: var(--gold);
+  }
+  
+  .hover\:text-gold:hover {
+    color: var(--gold);
+  }
+  
+  .hover\:bg-gold:hover {
+    background-color: var(--gold);
+  }
+  
+  .hover\:border-gold:hover {
+    border-color: var(--gold);
+  }
+  
+  .text-gold-dark {
+    color: var(--gold-dark);
+  }
+  
+  .bg-gold-dark {
+    background-color: var(--gold-dark);
+  }
+  
+  .text-gold-light {
+    color: var(--gold-light);
+  }
+  
+  .bg-gold-light {
+    background-color: var(--gold-light);
+  }
+  
+  /* Golden gradients */
+  .gradient-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  }
+  
+  .gradient-gold-subtle {
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
+  }
+}
+
+/* Animation for fashion elements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  background-size: 200px 100%;
+}
+
+/* Golden focus states */
+@layer base {
+  .focus-gold:focus {
+    @apply outline-none ring-2 ring-gold border-gold;
+    --tw-ring-color: var(--gold);
+  }
+}
+
+/* Price styling */
+.price-gold {
+  @apply text-gold font-bold text-lg;
+}
+
+.discount-badge {
+  @apply bg-gold text-white px-2 py-1 text-xs font-bold rounded;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-spacing {
+    @apply py-12 px-4;
+  }
+  
+  .btn-gold, .btn-gold-outline {
+    @apply px-4 py-2 text-sm;
+  }
+}
+
+/* Print styles */
+@media print {
+  .text-gold {
+    color: #cda96f !important;
+  }
 }
