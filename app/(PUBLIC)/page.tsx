@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import CustomerFeedback from "@/components/ui/layout/CustomerFeedback"
+import CustomSuitsSection from "@/components/ui/layout/CustomSuitsSection"
 
 import HeroSection from "@/components/ui/layout/Hero"
 import InnerSection from "@/components/ui/layout/InnerSection"
@@ -16,6 +17,7 @@ export default function Home() {
       <RecentProductShowcase />
       <VideoSection/>
       <CustomerFeedback />
+     
    
     
       

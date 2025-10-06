@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Slider from './Slider';
+import InnerSection from "@/components/ui/layout/InnerSection";
+import Slider from "@/components/ui/layout/Slider";
+import VideoSection from "@/components/ui/layout/VideoSection";
 
-export default function HeroSection() {
- 
-
+export default function AboutPage() {
   return (
-<section
+    <>
+  <section
   className="relative bg-black text-white min-h-screen flex items-center py-8 lg:py-0 overflow-hidden"
   style={{
     backgroundImage: "url('/inner-section-bg-scaled.jpg')",
@@ -70,14 +70,15 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
           <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
-            {/* Logo */}
-            <div className="flex justify-center lg:justify-start">
-              <img 
-                src="/logo.jpg" 
-                alt="Logo" 
-                className="max-w-[300px] sm:max-w-[300px] lg:max-w-[450px] w-full"
-              />
-            </div>
+            <h1 className="text-4xl font-bold">About Us</h1>
+            <p className="text-gray-300 text-sm leading-relaxed">Where Heritage Meets Modern Precision</p>
+            <p className="text-gray-400 text-sm leading-relaxed">Born from a pursuit of perfection, Three Five Two is a symbol of balance — three for design, five for craftsmanship, two for individuality.
+We believe luxury is not loud; it’s felt in every thread, every finish, every fit.
+Each garment we create reflects the sophistication of modern tailoring, designed to outlast trends and define personal style.
+</p>
+           
+           
+            
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 sm:gap-6">
@@ -115,18 +116,17 @@ export default function HeroSection() {
           {/* Right Content - Image Slider */}
           <div className="relative order-1 lg:order-2 mb-8 lg:mb-0">
             {/* Slider Container */}
-            <Slider />
-           
-          </div>
-        </div>
-      </div>
+           <VideoSection />
 
-      {/* Scroll Indicator - Hidden on mobile, visible on desktop */}
-      <div className="absolute bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2 hidden lg:block">
-        <div className="w-px h-16 bg-gray-600">
-          <div className="w-px h-8 bg-gold mx-auto animate-bounce"></div>
-        </div>
-      </div>
+      
+              </div>
+            </div>
+          </div>
+
+     
+  
     </section>
+   <InnerSection />
+    </>
   );
 }

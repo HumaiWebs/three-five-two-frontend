@@ -43,10 +43,10 @@ export default function Header() {
             <Link href="/" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               HOME
             </Link>
-            <Link href="/pages" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
+            <Link href="/about" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               ABOUT US
             </Link>
-            <Link href="/gallery" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
+            <Link href="/shop" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               SHOP
             </Link>
             <Link href="/gift-card" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
