@@ -25,7 +25,7 @@ const routes = [
     icon: GrProductHunt,
     subRoutes: [
       { label: "All Products", href: "/admin/products", icon: GrProductHunt },
-      { label: "Add Product", href: "/admin/add-product", icon: PiPlusBold},
+      { label: "Add Product", href: "/admin/add-product", icon: PiPlusBold },
     ],
   },
 ];
@@ -42,7 +42,9 @@ const SidebarOption = ({
   subRoutes?: Route[];
 }) => {
   const pathname = usePathname();
-  const pathMatched = pathname === href;
+  const pathMatched = href
+    ? pathname === href
+    : subRoutes?.some((route) => pathname === route.href);
   const [showChildren, setShowChildren] = useState(false);
   if (href)
     return (

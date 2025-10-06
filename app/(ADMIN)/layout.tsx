@@ -1,10 +1,14 @@
 import Sidebar from "@/components/admin/sidebar";
-import React from "react";
+import React, { ReactNode } from "react";
 
-const AdminLayout = () => {
+const AdminLayout = ({children}:{children:ReactNode}) => {
   return (
     <div className="w-full min-h-screen flex gap-4 p-4">
       <Sidebar />
+      <div className="p-4 bg-white rounded-md border border-gray-200 flex-1">
+
+      {children}
+      </div>
     </div>
   );
 };
