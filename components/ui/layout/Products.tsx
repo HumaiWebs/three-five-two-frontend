@@ -3,110 +3,50 @@
 import React from 'react';
 import Image from 'next/image';
 
-export default function Products() {
+type ProductFilters = {
+  minPrice?: string;
+  maxPrice?: string;
+  types?: string[];
+  collections?: string[];
+};
+
+export default function Products({ filters = {} as ProductFilters }) {
   const products = [
-    {
-      id: 1,
-      name: "Double Enriched Blazar",
-      price: "53.00",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 2,
-      name: "Retro Style Blazar",
-      price: "58.00",
-      image: "/retro-style-blazar.png",
-    },
-    {
-      id: 3,
-      name: "Fashion Fluid Business Blazar",
-      price: "68.00",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 4,
-      name: "Double Breasted Blazer",
-      price: "80.00",
-      image: "/retro-style-blazar.png",
-    },
-    {
-      id: 5,
-      name: "Wedding Style Blazer",
-      price: "75.00",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 6,
-      name: "Fashion Plaid Business Blazer",
-      price: "88.00",
-      image: "/retro-style-blazar.png",
-    },
-       {
-      id: 7,
-      name: "Double Breasted Blazer",
-      price: "80.00",
-      image: "/retro-style-blazar.png",
-    },
-    {
-      id: 8,
-      name: "Wedding Style Blazer",
-      price: "75.00",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 9,
-      name: "Fashion Plaid Business Blazer",
-      price: "88.00",
-      image: "/retro-style-blazar.png",
-    },
+    { id: 1, name: "Double Enriched Blazar", price: 53, type: "Blazer", collection: "Blazer", image: "/double-enriched-blazar.png" },
+    { id: 2, name: "Retro Style Blazar", price: 58, type: "Blazer", collection: "Blazer", image: "/retro-style-blazar.png" },
+    { id: 3, name: "Fashion Fluid Business Blazar", price: 68, type: "Blazer", collection: "Blazer", image: "/double-enriched-blazar.png" },
+    { id: 4, name: "Double Breasted Blazer", price: 80, type: "Blazer", collection: "Blazer", image: "/retro-style-blazar.png" },
+    { id: 5, name: "Wedding Style Blazer", price: 75, type: "Blazer", collection: "Blazer", image: "/double-enriched-blazar.png" },
+    { id: 6, name: "Fashion Plaid Business Blazer", price: 88, type: "Blazer", collection: "Blazer", image: "/retro-style-blazar.png" },
   ];
 
+  // Apply filters if provided
+  const filteredProducts = products.filter((p) => {
+    const minPrice = filters.minPrice ? parseFloat(filters.minPrice) : null;
+    const maxPrice = filters.maxPrice ? parseFloat(filters.maxPrice) : null;
+
+    const priceCheck = (!minPrice || p.price >= minPrice) && (!maxPrice || p.price <= maxPrice);
+    const typeCheck = !filters.types || filters.types.length === 0 || filters.types.includes(p.type);
+    const collectionCheck = !filters.collections || filters.collections.length === 0 || filters.collections.includes(p.collection);
+
+    return priceCheck && typeCheck && collectionCheck;
+  });
+
   return (
-    <section
-      className="relative bg-black text-white py-20 px-8"
-      style={{
-        backgroundImage: "url('/product-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-black/80"></div>
+    <section className="relative text-white  px-8">
+      
 
-      {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <p className="text-gold text-lg italic">Explore More</p>
-          <div className="w-28 h-px bg-gold mx-auto mb-5"></div>
-          <h2 className="text-4xl lg:text-5xl font-bold uppercase tracking-wide mb-4">
-            Enduringly Stylish Materials
-          </h2>
-        </div>
+        
 
-        {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-6"
-            >
-              {/* Product Image */}
+          {filteredProducts.map((product) => (
+            <div key={product.id} className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-6">
               <div className="relative h-80 lg:h-[28rem] mb-6 overflow-hidden">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-
-                {/* Hover Overlay */}
+                <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
               </div>
 
-              {/* Product Info */}
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-light tracking-wide border-b border-gray-700 pb-3 group-hover:border-gold transition-colors duration-300">
                   {product.name}
@@ -118,7 +58,6 @@ export default function Products() {
                 </button>
               </div>
 
-              {/* Corner Accents */}
               <div className="absolute top-0 left-0 w-3 h-3 border-l border-t border-gray-700 group-hover:border-gold"></div>
               <div className="absolute top-0 right-0 w-3 h-3 border-r border-t border-gray-700 group-hover:border-gold"></div>
               <div className="absolute bottom-0 left-0 w-3 h-3 border-l border-b border-gray-700 group-hover:border-gold"></div>
@@ -127,7 +66,6 @@ export default function Products() {
           ))}
         </div>
 
-        {/* View All Button */}
         <div className="text-center mt-12">
           <button className="border border-gold text-gold px-8 py-3 uppercase tracking-widest text-sm hover:bg-gold hover:text-black transition-colors duration-300">
             View Collection
