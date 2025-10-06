@@ -1,7 +1,10 @@
 'use client';
-
+import { FaCartArrowDown , FaSearch } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { MdAccountCircle } from "react-icons/md";
+
 import Link from "next/link";
+
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,17 +44,16 @@ export default function Header() {
               HOME
             </Link>
             <Link href="/pages" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
-              PAGES
+              ABOUT US
+            </Link>
+            <Link href="/gallery" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
+              SHOP
             </Link>
             <Link href="/gift-card" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               GIFT CARD
             </Link>
-            <Link href="/gallery" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
-              GALLERY
-            </Link>
-            <Link href="/shop" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
-              SHOP
-            </Link>
+            
+            
             <Link href="/news" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               NEWS
             </Link>
@@ -62,20 +64,21 @@ export default function Header() {
 
           {/* Right Side Icons - Exact match to screenshot */}
           <div className="flex items-center space-x-6">
+              {/* Cart Count - 8 */}
+              <button className="text-white hover:text-gold transition-colors  font-normal text-2xl">
+             <FaSearch />
+            </button>
             {/* Search Icon - Q */}
-            <button className="text-white hover:text-gold transition-colors text-sm font-normal">
-              Q
+            <button className="text-white hover:text-gold transition-colors  font-normal text-2xl">
+              <FaCartArrowDown />
             </button>
 
             {/* User Icon - A */}
-            <button className="text-white hover:text-gold transition-colors text-sm font-normal">
-              A
+            <button className="text-white hover:text-gold transition-colors  font-normal text-2xl">
+             <MdAccountCircle />
             </button>
 
-            {/* Cart Count - 8 */}
-            <button className="text-white hover:text-gold transition-colors text-sm font-normal">
-              8
-            </button>
+          
 
             {/* Mobile Menu Button */}
             <button 
@@ -107,7 +110,7 @@ export default function Header() {
                 className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                PAGES
+               ABOUT US
               </Link>
               <Link 
                 href="/gift-card" 
@@ -121,7 +124,7 @@ export default function Header() {
                 className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                GALLERY
+                Shop
               </Link>
               <Link 
                 href="/shop" 
