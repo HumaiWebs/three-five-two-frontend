@@ -6,12 +6,23 @@ import React, { useState } from "react";
 import { GrDashboard, GrProductHunt } from "react-icons/gr";
 import { PiCaretRightDuotone, PiPlusBold } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
-
+import { Button } from "../ui/button";
+import { useAuth } from "@/store/AuthProvider";
+import { BiLogOut } from "react-icons/bi";
 export type Route = {
   label: string;
   href?: string;
   icon: React.ElementType;
   children?: Route[];
+};
+
+export const LogoutButton = () => {
+  const { logout } = useAuth();
+  return (
+    <Button onClick={logout} className="flex gap-2 items-center bg-red-100 text-red-600 hover:bg-red-600 hover:text-white w-full">
+      <BiLogOut /> Logout
+    </Button>
+  );
 };
 
 const routes = [
@@ -110,6 +121,9 @@ const Sidebar = () => {
         {routes.map((route) => (
           <SidebarOption key={route.label} {...route} />
         ))}
+      </div>
+      <div className="w-full p-2">
+        <LogoutButton />
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ const AddProductForm = () => {
       return (await http.post("/product", data)).data;
     },
     onSuccess: (response) => {
-      if (response) {
+      if (response.success) {
         reset();
         setSelectedImages([]);
         setImageError("");
@@ -119,22 +119,11 @@ const AddProductForm = () => {
     });
 
     // Append images
-    console.log(selectedImages);
-    selectedImages.forEach((image, index) => {
-      formData.append(`images[${index}]`, image);
+    selectedImages.forEach((image) => {
+      formData.append("images", image);
     });
 
-    // Log FormData entries to verify files are appended
-    console.log('FormData contents:');
-    for (let [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: File(${value.name}, ${value.size} bytes)`);
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    }
-
-    // mutate(formData);
+    mutate(formData);
   };
 
   return (

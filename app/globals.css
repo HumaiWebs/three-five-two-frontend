@@ -317,3 +317,9 @@
     color: #cda96f !important;
   }
 }
+
+/* Global styles */
+
+button {
+  cursor: pointer;
+}
