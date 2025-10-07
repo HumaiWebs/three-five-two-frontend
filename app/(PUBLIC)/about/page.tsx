@@ -1,5 +1,7 @@
 'use client';
 
+import CustomerFeedback from "@/components/ui/layout/CustomerFeedback";
+import ImageGallery from "@/components/ui/layout/ImageGallery";
 import InnerSection from "@/components/ui/layout/InnerSection";
 import Slider from "@/components/ui/layout/Slider";
 import VideoSection from "@/components/ui/layout/VideoSection";
@@ -127,6 +129,8 @@ Each garment we create reflects the sophistication of modern tailoring, designed
   
     </section>
    <InnerSection />
+   <CustomerFeedback />
+   <ImageGallery />
     </>
   );
 }

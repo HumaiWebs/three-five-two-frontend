@@ -5,7 +5,7 @@ export default function FooterSection() {
     {
       title: "ORDER ASSISTANCE",
       links: [
-        "Book An Appointment",
+      
         "Shipping & Delivery", 
         "Returns & Refunds",
         "Gift Wrapping",

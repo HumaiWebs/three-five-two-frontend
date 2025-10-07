@@ -49,13 +49,11 @@ export default function Header() {
             <Link href="/shop" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               SHOP
             </Link>
-            <Link href="/gift-card" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
-              GIFT CARD
-            </Link>
+           
             
             
-            <Link href="/news" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
-              NEWS
+            <Link href="/announcement" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
+              Announcements
             </Link>
             <Link href="/contact" className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors">
               CONTACT
@@ -134,11 +132,11 @@ export default function Header() {
                 SHOP
               </Link>
               <Link 
-                href="/news" 
+                href="/announcement" 
                 className="text-xs font-normal uppercase tracking-widest text-white hover:text-gold transition-colors py-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                NEWS
+                ANNOUNCEMENT
               </Link>
               <Link 
                 href="/contact" 

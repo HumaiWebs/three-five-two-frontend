@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function InnerSection() {
   return (
@@ -31,46 +31,55 @@ export default function InnerSection() {
 
         {/* Content Wrapper */}
         <div className="relative z-10">
-          <p className="uppercase tracking-[0.4em] text-[13px] text-gold mb-4">Cool Look</p>
+          <p className="uppercase tracking-[0.4em] text-[13px] font-bold text-gold mb-4">
+            Cool Look
+          </p>
           <h1 className="text-4xl lg:text-5xl font-semibold leading-snug text-white mb-8">
-            We comprehend your style needs and create <span className="block">wonderful clothing</span>
+            We comprehend your style needs and create wonderful clothing
           </h1>
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-8 mb-10">
             <div className="bg-black/40 p-6 text-center rounded">
               <div className="text-4xl text-gold font-light">49+</div>
-              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">Tailors</div>
+              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                Tailors
+              </div>
             </div>
             <div className="bg-black/40 p-6 text-center rounded">
               <div className="text-4xl text-gold font-light">21M</div>
-              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">Reviews</div>
+              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                Reviews
+              </div>
             </div>
             <div className="bg-black/40 p-6 text-center rounded">
               <div className="text-4xl text-gold font-light">56k</div>
-              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">Bookings</div>
+              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                Bookings
+              </div>
             </div>
             <div className="bg-black/40 p-6 text-center rounded">
               <div className="text-4xl text-gold font-light">774+</div>
-              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">Clients</div>
+              <div className="text-xs uppercase tracking-widest text-gray-300 mt-2">
+                Clients
+              </div>
             </div>
           </div>
 
           {/* CTA + Avatars */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="max-w-xs">
+            <div className="max-w-lg">
               <p className="text-gray-300 text-sm leading-relaxed">
-                Nulla pellentesque dignissim enim sit amet venenatis urna. Laoreet non
-                curabitur gravida arcu ac tortor dignissim convallis aenean.
+                Each piece is tailored with intent — using the finest fabrics,
+                impeccable cuts, and an attention to detail that cannot be
+                rushed. Our garments are not merely worn; they are experienced.
+                Every suit tells a story of heritage, precision, and quiet
+                confidence.
               </p>
               <button className="bg-[#bfa16a] text-black px-6 py-3 mt-6 uppercase text-sm tracking-widest hover:bg-[#caa94d] transition-colors">
                 Shop the Sales
               </button>
             </div>
-
-         
-         
-           
           </div>
         </div>
       </div>

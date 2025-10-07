@@ -57,7 +57,7 @@ export default function RecentProductShowcase() {
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-              <p className="text-gold text-lg italic ">Recent Products</p>
+              <p className="text-gold text-lg italic ">Explore Our Signature Collections</p>
             <div className="w-28 h-px bg-gold mx-auto  mb-5"></div>
           <h2 className="text-4xl lg:text-5xl font-bold uppercase tracking-wide mb-4">
           Enduringly Stylish Materials

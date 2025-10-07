@@ -37,11 +37,9 @@ export default function Products({ filters = {} as ProductFilters }) {
       
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProducts.map((product) => (
-            <div key={product.id} className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-6">
+            <div key={product.id} className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-2">
               <div className="relative h-80 lg:h-[28rem] mb-6 overflow-hidden">
                 <Image src={product.image} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>

@@ -6,12 +6,16 @@ type ShopFilterProps = {
     maxPrice: number | string;
     types: string[];
     collections: string[];
+    colors: string[];
+    fabrics: string[];
   };
   onFilterChange: (filters: {
     minPrice: number | string;
     maxPrice: number | string;
     types: string[];
     collections: string[];
+    colors: string[];
+    fabrics: string[];
   }) => void;
 };
 
@@ -39,11 +43,19 @@ export default function ShopFilter({ filters, onFilterChange }: ShopFilterProps)
         </div>
       </div>
 
-      {/* Product Type Filter */}
+      {/* Suit Type Filter */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Product Type</h3>
+        <h3 className="text-lg font-semibold mb-2">Suit Type</h3>
         <ul className="space-y-1">
-          {["Pink", "Purple", "Red", "Yellow"].map((type) => (
+          {[
+            'Two-Piece Suit',
+            'Three-Piece Suit',
+            'Tuxedo',
+            'Double-Breasted',
+            'Slim Fit',
+            'Classic Fit',
+            'Tailored Fit',
+          ].map((type) => (
             <li key={type}>
               <label className="flex items-center space-x-2">
                 <input
@@ -65,14 +77,17 @@ export default function ShopFilter({ filters, onFilterChange }: ShopFilterProps)
       </div>
 
       {/* Collections Filter */}
-      <div>
+      <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Collections</h3>
-        <ul className="space-y-1 max-h-60 overflow-y-auto">
+        <ul className="space-y-1">
           {[
-            "Blazer", "Bracelet", "Earrings", "Gym Bags", "Gym Equipments",
-            "Gym Products", "Gym Shoes", "Jewellery", "Leggings", "Men Watch",
-            "Neck Chain", "Ring", "Sports", "Top Wear", "Uncategorized",
-            "Unisex Luxury Watches", "Watches", "Women Watch"
+            'Wedding Collection',
+            'Business Collection',
+            'Evening Wear',
+            'Designer Series',
+            'Luxury Tailor Line',
+            'Seasonal Collection',
+            'Casual Blazers',
           ].map((collection) => (
             <li key={collection}>
               <label className="flex items-center space-x-2">
@@ -88,6 +103,75 @@ export default function ShopFilter({ filters, onFilterChange }: ShopFilterProps)
                   className="accent-gold"
                 />
                 <span>{collection}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Color Filter */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Color</h3>
+        <ul className="space-y-1">
+          {[
+            'Black',
+            'Navy Blue',
+            'Charcoal Gray',
+            'Light Gray',
+            'Beige',
+            'Burgundy',
+            'Ivory',
+            'White',
+            'Midnight Blue',
+          ].map((color) => (
+            <li key={color}>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={filters.colors.includes(color)}
+                  onChange={(e) => {
+                    const newColors = e.target.checked
+                      ? [...filters.colors, color]
+                      : filters.colors.filter((c) => c !== color);
+                    onFilterChange({ ...filters, colors: newColors });
+                  }}
+                  className="accent-gold"
+                />
+                <span>{color}</span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Fabric Filter */}
+      <div>
+        <h3 className="text-lg font-semibold mb-2">Fabric</h3>
+        <ul className="space-y-1">
+          {[
+            'Wool',
+            'Cashmere',
+            'Linen',
+            'Cotton',
+            'Silk Blend',
+            'Velvet',
+            'Tweed',
+            'Polyester Blend',
+          ].map((fabric) => (
+            <li key={fabric}>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={filters.fabrics.includes(fabric)}
+                  onChange={(e) => {
+                    const newFabrics = e.target.checked
+                      ? [...filters.fabrics, fabric]
+                      : filters.fabrics.filter((f) => f !== fabric);
+                    onFilterChange({ ...filters, fabrics: newFabrics });
+                  }}
+                  className="accent-gold"
+                />
+                <span>{fabric}</span>
               </label>
             </li>
           ))}
