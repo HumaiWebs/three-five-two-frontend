@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { http } from "@/lib/httpClient";
 import PageLoader from "@/components/global/PageLoader";
+import useIsProtectedPage from "@/hooks/useIsProtectedPage";
 
 // setup axios client to set auth cookie
 http.defaults.withCredentials = true;
@@ -48,14 +49,11 @@ function isAuthPage() {
   );
 }
 
-function isProtectedPage(path: string) {
-  return path.startsWith("/admin");
-}
-
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const pathname = usePathname();
+  const isProtectedPage = useIsProtectedPage();
+
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
@@ -82,12 +80,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!user) {
       const userStored = localStorage.getItem("user");
       if (!userStored) {
-        if (!isAuthPage() && isProtectedPage(pathname)) {
+        if (!isAuthPage() && isProtectedPage) {
           router.push("/auth/login");
         }
       } else {
         // invoke check auth endpoint
-        if (isProtectedPage(pathname)) {
+        if (isProtectedPage) {
           check_auth();
         }
       }
@@ -99,7 +97,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (check_auth_error && (check_auth_error as AxiosError).status === 401) {
         localStorage.removeItem("user");
         // setUser(null);
-        if (!isAuthPage() && isProtectedPage(pathname)) {
+        if (!isAuthPage() && isProtectedPage) {
           router.push("/auth/login");
         }
       } else {
@@ -112,7 +110,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           } else {
             localStorage.removeItem("user");
             setUser(null);
-            if (!isAuthPage() && isProtectedPage(pathname)) {
+            if (!isAuthPage() && isProtectedPage) {
               router.push("/auth/login");
             }
           }
@@ -147,7 +145,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const values = { user, login, logout };
   return (
     <authContext.Provider value={values}>
-      {isProtectedPage(pathname) && !user ? (
+      {isProtectedPage && !user ? (
         <PageLoader message="Loading Page Content...." />
       ) : (
         children
