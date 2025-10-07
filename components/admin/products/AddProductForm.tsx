@@ -11,46 +11,130 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { http } from "@/lib/httpClient";
+import toast from "react-hot-toast";
+import { Category } from "@/types/product";
+import SelectCategory from "./SelectCategory";
 
 const AddProductForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string>("");
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imageError, setImageError] = useState<string>("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<AddProductSchema>({
     resolver: zodResolver(addProductSchema),
   });
 
-  const onSubmit = async (data: AddProductSchema) => {
-    setIsSubmitting(true);
-    setSubmitError("");
-
-    try {
-      const response = await fetch("/product", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add product");
+  const { mutate, status } = useMutation({
+    mutationFn: async (data: FormData) => {
+      return (await http.post("/product", data)).data;
+    },
+    onSuccess: (response) => {
+      if (response) {
+        reset();
+        setSelectedImages([]);
+        setImageError("");
+        toast.success("Product added successfully");
+      } else {
+        toast.error(response.message || "Failed to add product");
       }
+    },
+  });
 
-      reset();
-      // Handle success (e.g., show success message, redirect)
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "An error occurred"
-      );
-    } finally {
-      setIsSubmitting(false);
+  const { data: categories, isFetching: fetchingCategories } = useQuery<
+    Category[]
+  >({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      return (await http.get("/category")).data;
+    },
+  });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setImageError("");
+
+    if (files.length < 1) {
+      setImageError("At least 1 image is required");
+      setSelectedImages([]);
+      return;
     }
+
+    if (files.length > 4) {
+      setImageError("Maximum 4 images allowed");
+      setSelectedImages([]);
+      return;
+    }
+
+    // Validate file types
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const invalidFiles = files.filter(
+      (file) => !validTypes.includes(file.type)
+    );
+
+    if (invalidFiles.length > 0) {
+      setImageError("Only JPEG, PNG, and WebP images are allowed");
+      setSelectedImages([]);
+      return;
+    }
+
+    setSelectedImages(files);
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = selectedImages.filter((_, i) => i !== index);
+    setSelectedImages(newImages);
+
+    if (newImages.length < 1) {
+      setImageError("At least 1 image is required");
+    }
+  };
+
+  // Set category ID when selected
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategoryId(categoryId);
+    setValue("category", categoryId);
+  };
+
+  const onSubmit = async (data: AddProductSchema) => {
+    // Validate images before submission
+    if (selectedImages.length < 1) {
+      toast.error("Please select at least 1 image");
+      return;
+    }
+
+    // Create FormData to handle file uploads
+    const formData = new FormData();
+
+    // Append form fields
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+
+    // Append images
+    console.log(selectedImages);
+    selectedImages.forEach((image, index) => {
+      formData.append(`images[${index}]`, image);
+    });
+
+    // Log FormData entries to verify files are appended
+    console.log('FormData contents:');
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`${key}: File(${value.name}, ${value.size} bytes)`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
+
+    // mutate(formData);
   };
 
   return (
@@ -97,14 +181,11 @@ const AddProductForm = () => {
       </div>
 
       <div>
-        <Label htmlFor="category" className="block text-sm font-medium mb-1">
-          Category
-        </Label>
-        <Input
-          {...register("category")}
-          type="text"
-          id="category"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <SelectCategory
+          categories={categories}
+          setCategory={handleCategorySelect}
+          selectedCategoryId={selectedCategoryId}
+          isLoading={fetchingCategories}
         />
         <FormError message={errors.category?.message} />
       </div>
@@ -123,6 +204,52 @@ const AddProductForm = () => {
         <FormError message={errors.quantity?.message} />
       </div>
 
+      <div>
+        <Label htmlFor="images" className="block text-sm font-medium mb-1">
+          Product Images (1-4 images)
+        </Label>
+        <Input
+          type="file"
+          id="images"
+          multiple
+          accept="image/*"
+          onChange={handleImageChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          Select 1-4 images (JPEG, PNG, WebP only)
+        </p>
+
+        {imageError && <FormError message={imageError} />}
+
+        {selectedImages.length > 0 && (
+          <div className="mt-2">
+            <p className="text-sm font-medium mb-2">Selected Images:</p>
+            <div className="grid grid-cols-2 gap-2">
+              {selectedImages.map((image, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-24 object-cover rounded border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                  >
+                    ×
+                  </button>
+                  <p className="text-xs text-gray-600 mt-1 truncate">
+                    {image.name}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="flex items-center">
         <Input
           {...register("featured")}
@@ -136,14 +263,12 @@ const AddProductForm = () => {
       </div>
       <FormError message={errors.featured?.message} />
 
-      {submitError && <FormError message={submitError} />}
-
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={status === "pending"}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? "Adding Product..." : "Add Product"}
+        {status === "pending" ? "Adding Product..." : "Add Product"}
       </Button>
     </form>
   );
