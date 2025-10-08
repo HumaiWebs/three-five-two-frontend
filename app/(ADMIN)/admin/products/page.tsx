@@ -3,6 +3,7 @@ import { http } from "@/lib/httpClient";
 import { GetProductsResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { PiPencilBold, PiTrashBold } from "react-icons/pi";
 
 const AllProductsPage = () => {
   const { data, isFetching } = useQuery<GetProductsResponse>({
@@ -16,27 +17,49 @@ const AllProductsPage = () => {
       <div className="pb-2 border-b mb-4">
         <h2 className="text-2xl font-semibold text-gray-800">All Products</h2>
       </div>
-      <div className="overflow-x-auto">
+      <div className="flex-1 overflow-x-auto">
         <table className="min-w-full bg-white">
           <thead>
             <tr>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Image
+              <th className="px-4 py-2 text-lg text-left font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Image
+                </span>
               </th>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Name
+              <th className="px-4 py-2 text-lg text-left font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Name
+                </span>
               </th>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Price
+              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Price
+                </span>
               </th>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Category
+              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Category
+                </span>
               </th>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Quantity
+              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Quantity
+                </span>
               </th>
-              <th className="px-4 py-2  text-left text-sm font-medium text-gray-700">
-                Featured
+              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Featured
+                </span>
+              </th>
+              <th className="px-4 py-2 text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Created At
+                </span>
+              </th>
+              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
+                  Actions
+                </span>
               </th>
             </tr>
           </thead>
@@ -53,7 +76,7 @@ const AllProductsPage = () => {
                   <td className="py-2 text-sm text-gray-700">
                     <div className="rounded-l-md bg-white/60 backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
                       <img
-                        className="object-cover rounded-md"
+                        className="object-cover max-h-[80px] rounded-md"
                         src={product.images[0].url}
                         width={80}
                         height={80}
@@ -61,28 +84,39 @@ const AllProductsPage = () => {
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
-                    <div className="p-2 bg-white/60 backdrop-blur-md border-y border-y-white/40 h-20 flex items-center">
+                    <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
                       {product.name}
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
-                    <div className="p-2 bg-white/60 backdrop-blur-md border-y border-y-white/40 h-20 flex items-center">
+                    <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
                       ${product.price.toFixed(2)}
                     </div>
                   </td>
-                  <td className="py-2  text-sm text-gray-700">
-                    <div className="p-2 bg-white/60 backdrop-blur-md border-y border-y-white/40 h-20 flex items-center">
+                  <td className="py-2 text-sm text-gray-700">
+                    <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
                       {product.category}
                     </div>
                   </td>
-                  <td className="py-2  text-sm text-gray-700">
-                    <div className="p-2 bg-white/60 backdrop-blur-md border-y border-y-white/40 h-20 flex items-center">
+                  <td className="py-2 text-sm text-gray-700">
+                    <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
                       {product.quantity}
                     </div>
                   </td>
-                  <td className="py-2  text-sm text-gray-700">
-                    <div className="rounded-r-md bg-white/60 backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
+                  <td className="py-2 text-sm text-gray-700">
+                    <div className="bg-white/60 justify-center backdrop-blur-md text-center border-y border-y-white/40 p-2 h-20 flex items-center">
                       {product.featured ? "Yes" : "No"}
+                    </div>
+                  </td>
+                  <td className="py-2 text-sm text-gray-700">
+                    <div className="rounded-r-md text-center justify-center bg-white/60 backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
+                      {new Date(product.createdAt).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="py-2 text-sm text-gray-700">
+                    <div className="rounded-r-md bg-white/60 text-center justify-center backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
+                      <PiTrashBold className="text-red-600 cursor-pointer" size={24} />
+                      <PiPencilBold className="text-blue-600 ml-4 cursor-pointer" size={24} />
                     </div>
                   </td>
                 </tr>
