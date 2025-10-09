@@ -1,21 +1,25 @@
 "use client";
-import DeleteProductButton from "@/components/admin/products/DeleteProductButton";
-import DeleteResource from "@/components/global/DeleteResource";
-import Loader from "@/components/global/Loader";
-import { http } from "@/lib/httpClient";
-import { GetPagedResponse, Product } from "@/types/product";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
-import React from "react";
-import { PiCheck, PiPencilBold, PiXCircle } from "react-icons/pi";
 
-const AllProductsPage = () => {
-  const { data, isFetching } = useQuery<GetPagedResponse<Product>>({
-    queryKey: ["products_admin"],
+import Loader from "@/components/global/Loader";
+import { Category, GetPagedResponse } from "@/types/product";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import DeleteProductButton from "../products/DeleteProductButton";
+import Link from "next/link";
+import { PiPencilBold } from "react-icons/pi";
+import { http } from "@/lib/httpClient";
+import DeleteResource from "@/components/global/DeleteResource";
+
+const AllCategories = () => {
+  const { data, isFetching: fetchingCategories } = useQuery<
+    GetPagedResponse<Category>
+  >({
+    queryKey: ["categories_admin"],
     queryFn: async () => {
-      return (await http.get("product?page=1&limit=10")).data;
+      return (await http.get("/category?page=1&limit=10")).data;
     },
   });
+
   return (
     <>
       <div className="pb-2 border-b mb-4">
@@ -27,32 +31,18 @@ const AllProductsPage = () => {
             <tr>
               <th className="px-2 py-2 text-lg text-left font-medium text-gray-700">
                 <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
-                  Image
-                </span>
-              </th>
-              <th className="px-4 py-2 text-lg text-left font-medium text-gray-700">
-                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
                   Name
                 </span>
               </th>
+
               <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
                 <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
-                  Price
+                  Description
                 </span>
               </th>
               <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
                 <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
-                  Category
-                </span>
-              </th>
-              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
-                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
-                  Quantity
-                </span>
-              </th>
-              <th className="px-4 py-2  text-left text-lg font-medium text-gray-700">
-                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md">
-                  Featured
+                  Parent
                 </span>
               </th>
               <th className="px-4 py-2 text-lg font-medium text-gray-700">
@@ -68,74 +58,44 @@ const AllProductsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {isFetching ? (
+            {fetchingCategories ? (
               <tr>
                 <td colSpan={6} className="px-4 py-2 text-center">
-                  <Loader message="Loading products..." />
+                  <Loader message="Loading categories..." />
                 </td>
               </tr>
             ) : data && data.items.length > 0 ? (
-              data.items.map((product) => (
-                <tr key={product._id} className="h-24">
+              data.items.map((category) => (
+                <tr key={category._id} className="h-24">
                   <td className="py-2 text-sm text-gray-700">
                     <div className="rounded-l-md bg-white/60 backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
-                      <img
-                        className="object-cover max-h-[80px] rounded-md"
-                        src={product.images[0].url}
-                        width={80}
-                        height={80}
-                      />
+                      {category.name}
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
                     <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
-                      {product.name}
+                      {category.description || "N/A"}
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
                     <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
-                      ${product.price.toFixed(2)}
+                      {category.parent?.name || "N/A"}
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
                     <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
-                      {product.category}
-                    </div>
-                  </td>
-                  <td className="py-2 text-sm text-gray-700">
-                    <div className="p-2 justify-center bg-white/60 backdrop-blur-md text-center border-y border-y-white/40 h-20 flex items-center">
-                      {product.quantity}
-                    </div>
-                  </td>
-                  <td className="py-2 text-sm text-gray-700">
-                    <div className="bg-white/60 justify-center backdrop-blur-md text-center border-y border-y-white/40 p-2 h-20 flex items-center">
-                      {product.featured ? (
-                        <span className="flex items-center gap-1 text-green-600 font-semibold">
-                          <PiCheck />
-                          Yes
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1 text-red-500 font-semibold">
-                          <PiXCircle />
-                          No
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-2 text-sm text-gray-700">
-                    <div className="rounded-r-md text-center justify-center bg-white/60 backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
-                      {new Date(product.createdAt).toLocaleDateString()}
+                      {new Date(category.createdAt).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="py-2 text-sm text-gray-700">
                     <div className="rounded-r-md bg-white/60 text-center justify-center backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
                       <DeleteResource
-                        resourceName={product.name}
-                        resourceId={product._id}
-                        endpoint="/api/products"
-                        queryKeyToInvalidate="products_admin"
+                        resourceName={category.name}
+                        resourceId={category._id}
+                        endpoint="/api/categories"
+                        queryKeyToInvalidate="categories_admin"
                       />
-                      <Link href={`/admin/add-product?id=${product._id}`}>
+                      <Link href={`/admin/add-product?id=${category._id}`}>
                         <PiPencilBold
                           className="text-blue-600 ml-4 cursor-pointer"
                           size={24}
@@ -159,4 +119,4 @@ const AllProductsPage = () => {
   );
 };
 
-export default AllProductsPage;
+export default AllCategories;
