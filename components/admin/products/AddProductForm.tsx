@@ -243,6 +243,9 @@ const AddProductForm = () => {
       </div>
 
       <div>
+        <Label htmlFor="price" className="block text-sm font-medium mb-1">
+          Category
+        </Label>
         <SelectCategory
           categories={categories}
           setCategory={handleCategorySelect}

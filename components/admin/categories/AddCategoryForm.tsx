@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-    AddCategorySchema,
+  AddCategorySchema,
   addCategorySchema,
 } from "../../../zod/add-category-schema";
 import FormError from "../../global/FormError";
@@ -17,11 +17,10 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { queryClient } from "@/store/ClientWrapper";
 import SelectCategory from "../products/SelectCategory";
-import { Category } from "@/types/product";
+import { Category, GetPagedResponse } from "@/types/product";
+import Loader from "@/components/global/Loader";
 
 const AddCategoryForm = () => {
- 
-  
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const categoryId = useSearchParams().get("id");
 
@@ -45,10 +44,9 @@ const AddCategoryForm = () => {
       if (response.success) {
         reset();
         if (categoryId) {
-          
           queryClient.invalidateQueries({ queryKey: ["category", categoryId] });
         }
-        toast.success("Category added successfully");
+        toast.success(`Category ${categoryId ? "updated" : "added"} successfully`);
       } else {
         toast.error(response.message || "Failed to add category");
       }
@@ -56,17 +54,15 @@ const AddCategoryForm = () => {
   });
 
   const { data: categories, isFetching: fetchingCategories } = useQuery<
-    Category[]
+    GetPagedResponse<Category>
   >({
     queryKey: ["categories"],
     queryFn: async () => {
-      return (await http.get("/category")).data;
+      return (await http.get("/category?page=-1")).data;
     },
   });
 
-  
-
-   // Set category ID when selected
+  // Set category ID when selected
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategoryId(categoryId);
     setValue("parent", categoryId);
@@ -86,14 +82,12 @@ const AddCategoryForm = () => {
       reset({
         name: categoryDetails.name,
         description: categoryDetails.description,
-        
       });
       setSelectedCategoryId(categoryDetails.parent?._id ?? "");
     }
   }, [categoryDetails, fetchingCategoryDetails]);
 
   const onSubmit = async (data: AddCategorySchema) => {
-   
     mutate(data);
   };
 
@@ -125,12 +119,19 @@ const AddCategoryForm = () => {
         <FormError message={errors.description?.message} />
       </div>
       <div>
-        <SelectCategory
-          categories={categories}
-          setCategory={handleCategorySelect}
-          selectedCategoryId={selectedCategoryId}
-          isLoading={fetchingCategories}
-        />
+        <Label htmlFor="parent" className="block text-sm font-medium mb-1">
+          Parent
+        </Label>
+        {fetchingCategories ? (
+          <Loader message="Loading categories..." />
+        ) : (
+          <SelectCategory
+            categories={categories?.items?.filter((cat) => cat._id !== categoryId)}
+            setCategory={handleCategorySelect}
+            selectedCategoryId={selectedCategoryId}
+            isLoading={fetchingCategories}
+          />
+        )}
         <FormError message={errors.parent?.message} />
       </div>
       <Button

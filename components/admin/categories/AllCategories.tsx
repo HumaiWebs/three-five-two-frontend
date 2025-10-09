@@ -4,7 +4,6 @@ import Loader from "@/components/global/Loader";
 import { Category, GetPagedResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import DeleteProductButton from "../products/DeleteProductButton";
 import Link from "next/link";
 import { PiPencilBold } from "react-icons/pi";
 import { http } from "@/lib/httpClient";
@@ -95,7 +94,7 @@ const AllCategories = () => {
                         endpoint="/api/categories"
                         queryKeyToInvalidate="categories_admin"
                       />
-                      <Link href={`/admin/add-product?id=${category._id}`}>
+                      <Link href={`/admin/add-category?id=${category._id}`}>
                         <PiPencilBold
                           className="text-blue-600 ml-4 cursor-pointer"
                           size={24}
