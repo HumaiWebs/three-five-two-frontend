@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -14,13 +14,20 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "@/lib/httpClient";
 import toast from "react-hot-toast";
-import { Category } from "@/types/product";
+import { Category, Image, Product } from "@/types/product";
 import SelectCategory from "./SelectCategory";
+import { useSearchParams } from "next/navigation";
+import { PiArrowCounterClockwise, PiXCircleBold } from "react-icons/pi";
+import DeleteImageConfirmation from "./DeleteImageConfirmation";
 
 const AddProductForm = () => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const productId = useSearchParams().get("id");
+  const [existingDeletedImages, setExistingDeletedImages] = useState<
+    Array<Image & { deleted: boolean }>
+  >([]);
 
   const {
     register,
@@ -34,7 +41,9 @@ const AddProductForm = () => {
 
   const { mutate, status } = useMutation({
     mutationFn: async (data: FormData) => {
-      return (await http.post("/product", data)).data;
+      return productId
+        ? (await http.put(`/product/${productId}`, data)).data
+        : (await http.post("/product", data)).data;
     },
     onSuccess: (response) => {
       if (response.success) {
@@ -57,6 +66,12 @@ const AddProductForm = () => {
     },
   });
 
+  function getTotalExistingImages(numberOfNewlySelectedImage: number) {
+    const existingImagesCount =
+      productDetails?.images?.filter((img) => !isImageDeleted(img)).length || 0;
+    return existingImagesCount + numberOfNewlySelectedImage;
+  }
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setImageError("");
@@ -67,9 +82,8 @@ const AddProductForm = () => {
       return;
     }
 
-    if (files.length > 4) {
-      setImageError("Maximum 4 images allowed");
-      setSelectedImages([]);
+    if (getTotalExistingImages(files.length) > 4) {
+      toast.error("Maximum 4 images allowed");
       return;
     }
 
@@ -103,6 +117,29 @@ const AddProductForm = () => {
     setValue("category", categoryId);
   };
 
+  const { data: productDetails, isFetching: fetchingProductDetails } =
+    useQuery<Product>({
+      queryKey: ["product", productId],
+      queryFn: async () => {
+        return (await http.get(`/product/${productId}`)).data;
+      },
+      enabled: !!productId,
+    });
+
+  useEffect(() => {
+    if (productDetails && !fetchingProductDetails) {
+      reset({
+        name: productDetails.name,
+        description: productDetails.description,
+        price: productDetails.price,
+        category: productDetails.category,
+        quantity: productDetails.quantity,
+        featured: productDetails.featured,
+      });
+      setSelectedCategoryId(productDetails.category);
+    }
+  }, [productDetails, fetchingProductDetails]);
+
   const onSubmit = async (data: AddProductSchema) => {
     // Validate images before submission
     if (selectedImages.length < 1) {
@@ -118,6 +155,10 @@ const AddProductForm = () => {
       formData.append(key, value.toString());
     });
 
+    if (productId) {
+      formData.append("images", JSON.stringify(existingDeletedImages));
+    }
+
     // Append images
     selectedImages.forEach((image) => {
       formData.append("images", image);
@@ -125,6 +166,22 @@ const AddProductForm = () => {
 
     mutate(formData);
   };
+
+  function removeExistingImage(image: Image) {
+    setExistingDeletedImages((prev) => [...prev, { ...image, deleted: true }]);
+  }
+
+  function isImageDeleted(image: Image) {
+    return existingDeletedImages.some(
+      (img) => img.public_id === image.public_id && img.deleted
+    );
+  }
+
+  function restoreImage(image: Image) {
+    setExistingDeletedImages((prev) =>
+      prev.filter((img) => img.public_id !== image.public_id)
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -210,7 +267,44 @@ const AddProductForm = () => {
         </p>
 
         {imageError && <FormError message={imageError} />}
-
+        {productDetails?.images?.length &&
+          productDetails?.images.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm font-medium mb-2">Existing Images:</p>
+              <div className="grid grid-cols-3 gap-2">
+                {productDetails.images.map((imgUrl, index) => (
+                  <div key={index} className="relative">
+                    {!isImageDeleted(imgUrl) ? (
+                      <DeleteImageConfirmation
+                        image={imgUrl}
+                        onRemove={(image) => {
+                          removeExistingImage(image);
+                        }}
+                      />
+                    ) : (
+                      <div className="flex absolute top-2 right-2 gap-2">
+                        <div className="px-2 py-1 rounded-full text-sm border border-red-600 bg-red-100 text-red-600">
+                          Image Deleted
+                        </div>
+                        <button
+                          className="flex gap-2 text-sm border hover:bg-green-600 hover:text-white transition-colors duration-200 border-green-600 items-center px-2 py-1 rounded-full bg-green-100 text-green-600"
+                          onClick={() => restoreImage(imgUrl)}
+                        >
+                          <PiArrowCounterClockwise className="inline-block mr-1" />
+                          <span>Restore</span>
+                        </button>
+                      </div>
+                    )}
+                    <img
+                      src={imgUrl.url}
+                      alt={`Product Image ${index + 1}`}
+                      className="w-full h-24 object-contain rounded border"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         {selectedImages.length > 0 && (
           <div className="mt-2">
             <p className="text-sm font-medium mb-2">Selected Images:</p>
@@ -222,13 +316,10 @@ const AddProductForm = () => {
                     alt={`Preview ${index + 1}`}
                     className="w-full h-24 object-cover rounded border"
                   />
-                  <button
-                    type="button"
+                  <PiXCircleBold
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
-                  >
-                    ×
-                  </button>
+                    className="absolute cursor-pointer hover:scale-105 transition-all duration-200 top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                  />
                   <p className="text-xs text-gray-600 mt-1 truncate">
                     {image.name}
                   </p>
@@ -257,7 +348,9 @@ const AddProductForm = () => {
         disabled={status === "pending"}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
       >
-        {status === "pending" ? "Adding Product..." : "Add Product"}
+        {status === "pending"
+          ? "Adding Product..."
+          : `${productId ? "Save Changes" : "Add Product"}`}
       </Button>
     </form>
   );

@@ -4,8 +4,9 @@ import Loader from "@/components/global/Loader";
 import { http } from "@/lib/httpClient";
 import { GetProductsResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import React from "react";
-import { PiPencilBold, PiTrashBold } from "react-icons/pi";
+import { PiCheck, PiPencilBold, PiTrashBold, PiXCircle } from "react-icons/pi";
 
 const AllProductsPage = () => {
   const { data, isFetching } = useQuery<GetProductsResponse>({
@@ -69,7 +70,7 @@ const AllProductsPage = () => {
             {isFetching ? (
               <tr>
                 <td colSpan={6} className="px-4 py-2 text-center">
-                 <Loader message="Loading products..." />
+                  <Loader message="Loading products..." />
                 </td>
               </tr>
             ) : data && data.products.length > 0 ? (
@@ -109,16 +110,12 @@ const AllProductsPage = () => {
                     <div className="bg-white/60 justify-center backdrop-blur-md text-center border-y border-y-white/40 p-2 h-20 flex items-center">
                       {product.featured ? (
                         <span className="flex items-center gap-1 text-green-600 font-semibold">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
+                          <PiCheck />
                           Yes
                         </span>
                       ) : (
                         <span className="flex items-center gap-1 text-red-500 font-semibold">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
+                          <PiXCircle />
                           No
                         </span>
                       )}
@@ -131,8 +128,16 @@ const AllProductsPage = () => {
                   </td>
                   <td className="py-2 text-sm text-gray-700">
                     <div className="rounded-r-md bg-white/60 text-center justify-center backdrop-blur-md border-y border-y-white/40 p-2 h-20 flex items-center">
-                      <DeleteProductButton productName={product.name} productId={product._id} />
-                      <PiPencilBold className="text-blue-600 ml-4 cursor-pointer" size={24} />
+                      <DeleteProductButton
+                        productName={product.name}
+                        productId={product._id}
+                      />
+                      <Link href={`/admin/add-product?id=${product._id}`}>
+                        <PiPencilBold
+                          className="text-blue-600 ml-4 cursor-pointer"
+                          size={24}
+                        />
+                      </Link>
                     </div>
                   </td>
                 </tr>
