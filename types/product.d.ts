@@ -38,5 +38,6 @@ export interface Product {
 export interface Image {
     url:       string;
     public_id: string;
+    deleted?:  boolean;
 }
 

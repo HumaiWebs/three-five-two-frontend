@@ -19,6 +19,7 @@ import SelectCategory from "./SelectCategory";
 import { useSearchParams } from "next/navigation";
 import { PiArrowCounterClockwise, PiXCircleBold } from "react-icons/pi";
 import DeleteImageConfirmation from "./DeleteImageConfirmation";
+import { queryClient } from "@/store/ClientWrapper";
 
 const AddProductForm = () => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -50,6 +51,10 @@ const AddProductForm = () => {
         reset();
         setSelectedImages([]);
         setImageError("");
+        if (productId) {
+          setExistingDeletedImages([]);
+          queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        }
         toast.success("Product added successfully");
       } else {
         toast.error(response.message || "Failed to add product");
@@ -142,7 +147,11 @@ const AddProductForm = () => {
 
   const onSubmit = async (data: AddProductSchema) => {
     // Validate images before submission
-    if (selectedImages.length < 1) {
+    if (
+      selectedImages.length +
+        (productDetails?.images.filter((img) => !img.deleted).length || 0) <
+      1
+    ) {
       toast.error("Please select at least 1 image");
       return;
     }
@@ -156,7 +165,14 @@ const AddProductForm = () => {
     });
 
     if (productId) {
-      formData.append("images", JSON.stringify(existingDeletedImages));
+      formData.append(
+        "images",
+        JSON.stringify([
+          ...(productDetails?.images.filter((img) => !isImageDeleted(img)) ||
+            []),
+          ...existingDeletedImages,
+        ])
+      );
     }
 
     // Append images
@@ -272,36 +288,38 @@ const AddProductForm = () => {
             <div className="mt-2">
               <p className="text-sm font-medium mb-2">Existing Images:</p>
               <div className="grid grid-cols-3 gap-2">
-                {productDetails.images.map((imgUrl, index) => (
-                  <div key={index} className="relative">
-                    {!isImageDeleted(imgUrl) ? (
-                      <DeleteImageConfirmation
-                        image={imgUrl}
-                        onRemove={(image) => {
-                          removeExistingImage(image);
-                        }}
-                      />
-                    ) : (
-                      <div className="flex absolute top-2 right-2 gap-2">
-                        <div className="px-2 py-1 rounded-full text-sm border border-red-600 bg-red-100 text-red-600">
-                          Image Deleted
+                {productDetails.images
+                  .filter((img) => !img.deleted)
+                  .map((imgUrl, index) => (
+                    <div key={index} className="relative">
+                      {!isImageDeleted(imgUrl) ? (
+                        <DeleteImageConfirmation
+                          image={imgUrl}
+                          onRemove={(image) => {
+                            removeExistingImage(image);
+                          }}
+                        />
+                      ) : (
+                        <div className="flex absolute top-2 right-2 gap-2">
+                          <div className="px-2 py-1 rounded-full text-sm border border-red-600 bg-red-100 text-red-600">
+                            Image Deleted
+                          </div>
+                          <button
+                            className="flex gap-2 text-sm border hover:bg-green-600 hover:text-white transition-colors duration-200 border-green-600 items-center px-2 py-1 rounded-full bg-green-100 text-green-600"
+                            onClick={() => restoreImage(imgUrl)}
+                          >
+                            <PiArrowCounterClockwise className="inline-block mr-1" />
+                            <span>Restore</span>
+                          </button>
                         </div>
-                        <button
-                          className="flex gap-2 text-sm border hover:bg-green-600 hover:text-white transition-colors duration-200 border-green-600 items-center px-2 py-1 rounded-full bg-green-100 text-green-600"
-                          onClick={() => restoreImage(imgUrl)}
-                        >
-                          <PiArrowCounterClockwise className="inline-block mr-1" />
-                          <span>Restore</span>
-                        </button>
-                      </div>
-                    )}
-                    <img
-                      src={imgUrl.url}
-                      alt={`Product Image ${index + 1}`}
-                      className="w-full h-24 object-contain rounded border"
-                    />
-                  </div>
-                ))}
+                      )}
+                      <img
+                        src={imgUrl.url}
+                        alt={`Product Image ${index + 1}`}
+                        className="w-full h-24 object-contain rounded border"
+                      />
+                    </div>
+                  ))}
               </div>
             </div>
           )}
