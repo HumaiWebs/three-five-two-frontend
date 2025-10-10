@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { GrDashboard, GrProductHunt } from "react-icons/gr";
-import { PiCaretRightDuotone, PiPlusBold } from "react-icons/pi";
+import { PiCaretRightDuotone } from "react-icons/pi";
 import { twMerge } from "tailwind-merge";
 import { Button } from "../ui/button";
 import { useAuth } from "@/store/AuthProvider";
 import { BiLogOut } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
+import { routes } from "./../../lib/routes";
 
 export type Route = {
   label: string;
@@ -30,33 +30,6 @@ export const LogoutButton = () => {
   );
 };
 
-const routes = [
-  {
-    label: "Dashboard",
-    href: "/admin",
-    icon: GrDashboard,
-  },
-  {
-    label: "Products",
-    icon: GrProductHunt,
-    subRoutes: [
-      { label: "All Products", href: "/admin/products", icon: GrProductHunt },
-      { label: "Add Product", href: "/admin/add-product", icon: PiPlusBold },
-    ],
-  },
-  {
-    label: "Categories",
-    icon: PiPlusBold,
-    subRoutes: [
-      {
-        label: "All Categories",
-        href: "/admin/categories",
-        icon: GrProductHunt,
-      },
-      { label: "Add Category", href: "/admin/add-category", icon: PiPlusBold },
-    ],
-  },
-];
 
 const SidebarOption = ({
   label,

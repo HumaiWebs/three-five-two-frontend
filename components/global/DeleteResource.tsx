@@ -32,7 +32,7 @@ const DeleteResource = ({
     onSuccess: (data) => {
       if (data.success) {
         setOpen(false);
-        toast.success("Resource deleted successfully");
+        toast.success(data.message || `${resourceName || "Resource"} deleted successfully`);
         queryClient.invalidateQueries({ queryKey: [queryKeyToInvalidate] });
       } else {
         toast.error(data.message || "Failed to delete resource");

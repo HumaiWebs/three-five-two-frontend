@@ -23,7 +23,7 @@ const AllProductsPage = () => {
         <h2 className="text-2xl font-semibold text-gray-800">All Products</h2>
       </div>
       <div className="flex-1 overflow-x-auto">
-        <table className="min-w-full bg-white">
+        <table className="min-w-full">
           <thead>
             <tr>
               <th className="px-2 py-2 text-lg text-left font-medium text-gray-700">
@@ -133,7 +133,7 @@ const AllProductsPage = () => {
                       <DeleteResource
                         resourceName={product.name}
                         resourceId={product._id}
-                        endpoint="/api/products"
+                        endpoint="/product"
                         queryKeyToInvalidate="products_admin"
                       />
                       <EditResourceLink link={`/admin/add-product?id=${product._id}`} />

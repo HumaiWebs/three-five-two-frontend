@@ -26,7 +26,7 @@ const AllCategories = () => {
         <h2 className="text-2xl font-semibold text-gray-800">All Products</h2>
       </div>
       <div className="flex-1 overflow-x-auto">
-        <table className="min-w-full bg-white">
+        <table className="min-w-full">
           <thead>
             <tr>
               <th className="px-2 py-2 text-lg text-left font-medium text-gray-700">
@@ -92,7 +92,7 @@ const AllCategories = () => {
                       <DeleteResource
                         resourceName={category.name}
                         resourceId={category._id}
-                        endpoint="/api/categories"
+                        endpoint="/category"
                         queryKeyToInvalidate="categories_admin"
                         WarningMessage={`Deleting this category will also delete all its subcategories if any. Are you sure you want to proceed?`}
                       />
