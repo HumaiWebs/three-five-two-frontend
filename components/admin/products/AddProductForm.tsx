@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "@/lib/httpClient";
 import toast from "react-hot-toast";
-import { Category, Image, Product } from "@/types/product";
+import { Category, GetPagedResponse, Image, Product } from "@/types/product";
 import SelectCategory from "./SelectCategory";
 import { useSearchParams } from "next/navigation";
 import { PiArrowCounterClockwise, PiXCircleBold } from "react-icons/pi";
@@ -63,11 +63,11 @@ const AddProductForm = () => {
   });
 
   const { data: categories, isFetching: fetchingCategories } = useQuery<
-    Category[]
+    GetPagedResponse<Category>
   >({
     queryKey: ["categories"],
     queryFn: async () => {
-      return (await http.get("/category")).data;
+      return (await http.get("/category?page=-1")).data;
     },
   });
 
@@ -247,7 +247,7 @@ const AddProductForm = () => {
           Category
         </Label>
         <SelectCategory
-          categories={categories}
+          categories={categories?.items||[]}
           setCategory={handleCategorySelect}
           selectedCategoryId={selectedCategoryId}
           isLoading={fetchingCategories}
