@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { http } from "@/lib/httpClient";
 import { queryClient } from "@/store/ClientWrapper";
 import { useMutation } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import toast from "react-hot-toast";
 import { PiTrashBold } from "react-icons/pi";
 
@@ -12,6 +12,7 @@ type Props = {
   queryKeyToInvalidate: string;
   resourceId: string;
   resourceName: string;
+  WarningMessage?: string | ReactNode;
 };
 
 const DeleteResource = ({
@@ -19,6 +20,8 @@ const DeleteResource = ({
   endpoint,
   queryKeyToInvalidate,
   resourceName,
+  WarningMessage
+
 }: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -43,10 +46,17 @@ const DeleteResource = ({
       open={open}
       onOpenChange={setOpen}
       trigger={
-        <PiTrashBold className="text-red-600 cursor-pointer" size={24} />
+        <PiTrashBold className="text-red-600 hover:scale-105 transition-all duration-200 cursor-pointer" size={24} />
       }
     >
       <div>
+        {
+          WarningMessage && (
+            typeof WarningMessage === 'string' ?
+              <p className="mb-4 p-2 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded">
+                {WarningMessage}
+              </p> : typeof WarningMessage === 'function' && WarningMessage)
+        }
         <p>
           Are you sure you want to{" "}
           <strong className="text-red-700">delete</strong>{" "}

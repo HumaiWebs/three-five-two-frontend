@@ -8,6 +8,7 @@ import Link from "next/link";
 import { PiPencilBold } from "react-icons/pi";
 import { http } from "@/lib/httpClient";
 import DeleteResource from "@/components/global/DeleteResource";
+import EditResourceLink from "@/components/global/EditResourceLink";
 
 const AllCategories = () => {
   const { data, isFetching: fetchingCategories } = useQuery<
@@ -93,13 +94,9 @@ const AllCategories = () => {
                         resourceId={category._id}
                         endpoint="/api/categories"
                         queryKeyToInvalidate="categories_admin"
+                        WarningMessage={`Deleting this category will also delete all its subcategories if any. Are you sure you want to proceed?`}
                       />
-                      <Link href={`/admin/add-category?id=${category._id}`}>
-                        <PiPencilBold
-                          className="text-blue-600 ml-4 cursor-pointer"
-                          size={24}
-                        />
-                      </Link>
+                      <EditResourceLink link={`/admin/add-category?id=${category._id}`} />
                     </div>
                   </td>
                 </tr>

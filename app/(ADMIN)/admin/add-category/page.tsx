@@ -1,7 +1,8 @@
 import AddCategoryForm from "@/components/admin/categories/AddCategoryForm";
+import { Metadata } from "next";
 import React from "react";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Add Category - Admin",
   description: "Add a new category to the admin panel",
 };

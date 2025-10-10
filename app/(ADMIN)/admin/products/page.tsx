@@ -1,6 +1,7 @@
 "use client";
 import DeleteProductButton from "@/components/admin/products/DeleteProductButton";
 import DeleteResource from "@/components/global/DeleteResource";
+import EditResourceLink from "@/components/global/EditResourceLink";
 import Loader from "@/components/global/Loader";
 import { http } from "@/lib/httpClient";
 import { GetPagedResponse, Product } from "@/types/product";
@@ -135,12 +136,7 @@ const AllProductsPage = () => {
                         endpoint="/api/products"
                         queryKeyToInvalidate="products_admin"
                       />
-                      <Link href={`/admin/add-product?id=${product._id}`}>
-                        <PiPencilBold
-                          className="text-blue-600 ml-4 cursor-pointer"
-                          size={24}
-                        />
-                      </Link>
+                      <EditResourceLink link={`/admin/add-product?id=${product._id}`} />
                     </div>
                   </td>
                 </tr>
