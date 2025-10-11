@@ -1,3 +1,5 @@
+import Backbutton from "@/components/admin/Backbutton";
+import Header from "@/components/admin/Header";
 import AddProductForm from "@/components/admin/products/AddProductForm";
 import { Metadata } from "next";
 import React from "react";
@@ -9,11 +11,7 @@ export const metadata: Metadata = {
 const AddProductPage = () => {
   return (
     <>
-      <div className="pb-2 border-b mb-4 border-gray-300">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Add new product
-        </h2>
-      </div>
+      <Header title="Add new product" />
       <AddProductForm />
     </>
   );

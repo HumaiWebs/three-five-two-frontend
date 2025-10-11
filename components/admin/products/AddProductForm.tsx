@@ -20,6 +20,7 @@ import { useSearchParams } from "next/navigation";
 import { PiArrowCounterClockwise, PiXCircleBold } from "react-icons/pi";
 import DeleteImageConfirmation from "./DeleteImageConfirmation";
 import { queryClient } from "@/store/ClientWrapper";
+import Loader from "@/components/global/Loader";
 
 const AddProductForm = () => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -29,6 +30,7 @@ const AddProductForm = () => {
   const [existingDeletedImages, setExistingDeletedImages] = useState<
     Array<Image & { deleted: boolean }>
   >([]);
+  const [ogImage, setOgImage] = useState<File | null>(null);
 
   const {
     register,
@@ -180,6 +182,10 @@ const AddProductForm = () => {
       formData.append("images", image);
     });
 
+    if (ogImage) {
+      formData.append("ogImage", ogImage);
+    }
+
     mutate(formData);
   };
 
@@ -199,6 +205,9 @@ const AddProductForm = () => {
     );
   }
 
+  if (fetchingProductDetails && productId)
+    return <Loader message="Loading product details..." />;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
@@ -210,7 +219,7 @@ const AddProductForm = () => {
           type="text"
           id="name"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        />{" "}
         <FormError message={errors.name?.message} />
       </div>
 
@@ -247,7 +256,7 @@ const AddProductForm = () => {
           Category
         </Label>
         <SelectCategory
-          categories={categories?.items||[]}
+          categories={categories?.items || []}
           setCategory={handleCategorySelect}
           selectedCategoryId={selectedCategoryId}
           isLoading={fetchingCategories}
@@ -364,6 +373,53 @@ const AddProductForm = () => {
       </div>
       <FormError message={errors.featured?.message} />
 
+      <h2 className="font-semibold text-xl my-4">Seo Details</h2>
+      <div className="grid grid-cols-1 gap-4">
+        <Label className="block text-gray-900">SEO Title/Name</Label>
+        <Input
+          {...register("seo.name")}
+          type="text"
+          id="seo-name"
+          placeholder="SEO Name"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Label className="block text-gray-900">Seo Description</Label>
+        <Textarea
+          {...register("seo.description")}
+          id="seo-description"
+          placeholder="SEO Description"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <h2 className="font-semibold text-lg">OG (Open Graph Details)</h2>
+        <Label className="block text-gray-900">OG Title</Label>
+        <Input
+          {...register("seo.og.name")}
+          type="text"
+          id="seo-og-name"
+          placeholder="OG Name"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Label className="block text-gray-900">OG Description</Label>
+        <Textarea
+          {...register("seo.og.description")}
+          id="seo-og-description"
+          placeholder="OG Description"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Label className="block text-gray-900">OG Image</Label>
+        <Input
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              setOgImage(e.target.files[0]);
+            }
+          }}
+          type="file"
+          id="seo-og-image"
+          placeholder="OG Image URL"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
       <Button
         type="submit"
         disabled={status === "pending"}

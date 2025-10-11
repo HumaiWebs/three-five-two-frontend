@@ -1,7 +1,7 @@
-
-import AllCategories from '@/components/admin/categories/AllCategories';
-import { Metadata } from 'next';
-import React from 'react'
+import AllCategories from "@/components/admin/categories/AllCategories";
+import Header from "@/components/admin/Header";
+import { Metadata } from "next";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Categories - Admin",
@@ -10,8 +10,11 @@ export const metadata: Metadata = {
 
 const CategoriesPage = () => {
   return (
-    <AllCategories />
-  )
-}
+    <>
+      <Header title="All Categories" />
+      <AllCategories />
+    </>
+  );
+};
 
-export default CategoriesPage
+export default CategoriesPage;

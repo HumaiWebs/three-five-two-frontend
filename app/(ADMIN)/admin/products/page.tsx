@@ -1,4 +1,6 @@
 "use client";
+import Backbutton from "@/components/admin/Backbutton";
+import Header from "@/components/admin/Header";
 import ProductsTable from "@/components/admin/products/ProductsTable";
 import { Input } from "@/components/ui/input";
 import { http } from "@/lib/httpClient";
@@ -19,9 +21,7 @@ const AllProductsPage = () => {
   });
   return (
     <>
-      <div className="pb-2 border-b mb-4">
-        <h2 className="text-2xl font-semibold text-gray-800">All Products</h2>
-      </div>
+      <Header title="All Products" />
       <div className="mb-4">
         <Input
           value={queryInput}
