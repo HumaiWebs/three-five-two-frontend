@@ -1,4 +1,3 @@
-import Image from "next/image";
 import FeaturedProductsGrid from "./FeaturedProductsGrid";
 import { Suspense } from "react";
 import ProductsGridLoader from "./ProductsGridLoader";

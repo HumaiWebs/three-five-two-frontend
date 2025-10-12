@@ -21,6 +21,8 @@ const FeaturedProductsGrid = async () => {
                 alt={product.name}
                 width={400}
                 height={400}
+                placeholder="blur"
+                blurDataURL={product.images[0]?.url || ""}
                 className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
               />
 
