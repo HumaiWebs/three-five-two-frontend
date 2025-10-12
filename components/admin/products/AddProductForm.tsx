@@ -163,7 +163,11 @@ const AddProductForm = () => {
 
     // Append form fields
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value.toString());
+      const formValue =
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : value.toString();
+      formData.append(key, formValue);
     });
 
     if (productId) {
@@ -407,7 +411,8 @@ const AddProductForm = () => {
           placeholder="OG Description"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <Label className="block text-gray-900">OG Image</Label>
+        {/* TODO: enable later if needed */}
+        {/* <Label className="block text-gray-900">OG Image</Label>
         <Input
           onChange={(e) => {
             if (e.target.files && e.target.files.length > 0) {
@@ -418,7 +423,7 @@ const AddProductForm = () => {
           id="seo-og-image"
           placeholder="OG Image URL"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        /> */}
       </div>
       <Button
         type="submit"
