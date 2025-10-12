@@ -22,6 +22,7 @@ export type GetPagedResponse<T> = {
 export interface Product {
   _id: string;
   name: string;
+  slug: string;
   description: string;
   price: number;
   category: Partial<Category>;

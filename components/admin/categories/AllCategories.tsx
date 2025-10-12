@@ -4,8 +4,6 @@ import Loader from "@/components/global/Loader";
 import { Category, GetPagedResponse } from "@/types/product";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import Link from "next/link";
-import { PiPencilBold } from "react-icons/pi";
 import { http } from "@/lib/httpClient";
 import DeleteResource from "@/components/global/DeleteResource";
 import EditResourceLink from "@/components/global/EditResourceLink";
