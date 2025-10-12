@@ -24,7 +24,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  category: string;
+  category: Partial<Category>;
   quantity: number;
   images: Image[];
   reviews: any[];
