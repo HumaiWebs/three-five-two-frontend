@@ -50,9 +50,7 @@ const SelectCategory = ({
     // Clear selection if input doesn't match any category
     if (
       !value ||
-      !categories?.find(
-        (cat) => cat.name.toLowerCase() === value.toLowerCase()
-      )
+      !categories?.find((cat) => cat.name.toLowerCase() === value.toLowerCase())
     ) {
       setCategory("");
       setSelectedCategoryName("");
@@ -86,9 +84,6 @@ const SelectCategory = ({
 
   return (
     <div className="relative">
-      <label htmlFor="category" className="block text-sm font-medium mb-1">
-        Category
-      </label>
       <Input
         ref={inputRef}
         type="text"
@@ -113,7 +108,9 @@ const SelectCategory = ({
               key={category._id}
               onClick={() => handleCategorySelect(category)}
               className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                selectedCategoryId === category._id ? "bg-blue-50 text-blue-600" : ""
+                selectedCategoryId === category._id
+                  ? "bg-blue-50 text-blue-600"
+                  : ""
               }`}
             >
               {category.name}
@@ -122,16 +119,19 @@ const SelectCategory = ({
         </div>
       )}
 
-      {isDropdownOpen && !isLoading && searchTerm && filteredCategories.length === 0 && (
-        <div
-          ref={dropdownRef}
-          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg"
-        >
-          <div className="px-3 py-2 text-gray-500 text-sm">
-            No categories found matching "{searchTerm}"
+      {isDropdownOpen &&
+        !isLoading &&
+        searchTerm &&
+        filteredCategories.length === 0 && (
+          <div
+            ref={dropdownRef}
+            className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg"
+          >
+            <div className="px-3 py-2 text-gray-500 text-sm">
+              No categories found matching "{searchTerm}"
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

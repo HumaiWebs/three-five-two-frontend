@@ -7,6 +7,18 @@ export const addProductSchema = z.object({
   category: z.string().min(1, "Category is required"),
   quantity: z.number().int().min(0, "Quantity must be a non-negative integer"),
   featured: z.boolean(),
+  seo: z
+    .object({
+      name: z.string().optional(),
+      description: z.string().optional(),
+      og: z
+        .object({
+          name: z.string().optional(),
+          description: z.string().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 export type AddProductSchema = z.infer<typeof addProductSchema>;

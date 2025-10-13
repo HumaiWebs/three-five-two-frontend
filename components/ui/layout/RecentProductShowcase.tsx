@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import Image from "next/image";
@@ -41,7 +42,13 @@ export default function RecentProductShowcase() {
       image: "/retro-style-blazar.png",
     },
   ];
+=======
+import FeaturedProductsGrid from "./FeaturedProductsGrid";
+import { Suspense } from "react";
+import ProductsGridLoader from "./ProductsGridLoader";
+>>>>>>> 009cd721888b4759aae3a3ff71322adacb601267
 
+export default async function RecentProductShowcase() {
   return (
     <section
       className="relative bg-black text-white py-20 px-8"
@@ -53,6 +60,7 @@ export default function RecentProductShowcase() {
         backgroundAttachment: "fixed",
       }}
     >
+<<<<<<< HEAD
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-black/85"></div>
 
@@ -113,6 +121,29 @@ export default function RecentProductShowcase() {
             </div>
           ))}
         </div>
+=======
+      {/* Background Overlay - This covers the background only */}
+      <div className="absolute inset-0 bg-black/80"></div>
+
+      {/* Content Container - This needs to be above the overlay */}
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <p className="text-gold text-lg italic ">
+            Explore Our Signature Collections
+          </p>
+          <div className="w-28 h-px bg-gold mx-auto  mb-5"></div>
+          <h2 className="text-4xl lg:text-5xl font-bold uppercase tracking-wide mb-4">
+            Enduringly Stylish Materials
+          </h2>
+        </div>
+
+        {/* Products Grid */}
+
+        <Suspense fallback={<ProductsGridLoader />}>
+          <FeaturedProductsGrid />
+        </Suspense>
+>>>>>>> 009cd721888b4759aae3a3ff71322adacb601267
 
         {/* View All */}
         <div className="text-center mt-12">

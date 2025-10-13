@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -14,13 +14,23 @@ import { Button } from "@/components/ui/button";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { http } from "@/lib/httpClient";
 import toast from "react-hot-toast";
-import { Category } from "@/types/product";
+import { Category, GetPagedResponse, Image, Product } from "@/types/product";
 import SelectCategory from "./SelectCategory";
+import { useSearchParams } from "next/navigation";
+import { PiArrowCounterClockwise, PiXCircleBold } from "react-icons/pi";
+import DeleteImageConfirmation from "./DeleteImageConfirmation";
+import { queryClient } from "@/store/ClientWrapper";
+import Loader from "@/components/global/Loader";
 
 const AddProductForm = () => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string>("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const productId = useSearchParams().get("id");
+  const [existingDeletedImages, setExistingDeletedImages] = useState<
+    Array<Image & { deleted: boolean }>
+  >([]);
+  const [ogImage, setOgImage] = useState<File | null>(null);
 
   const {
     register,
@@ -34,13 +44,19 @@ const AddProductForm = () => {
 
   const { mutate, status } = useMutation({
     mutationFn: async (data: FormData) => {
-      return (await http.post("/product", data)).data;
+      return productId
+        ? (await http.put(`/product/${productId}`, data)).data
+        : (await http.post("/product", data)).data;
     },
     onSuccess: (response) => {
       if (response.success) {
         reset();
         setSelectedImages([]);
         setImageError("");
+        if (productId) {
+          setExistingDeletedImages([]);
+          queryClient.invalidateQueries({ queryKey: ["product", productId] });
+        }
         toast.success("Product added successfully");
       } else {
         toast.error(response.message || "Failed to add product");
@@ -49,13 +65,19 @@ const AddProductForm = () => {
   });
 
   const { data: categories, isFetching: fetchingCategories } = useQuery<
-    Category[]
+    GetPagedResponse<Category>
   >({
     queryKey: ["categories"],
     queryFn: async () => {
-      return (await http.get("/category")).data;
+      return (await http.get("/category?page=-1")).data;
     },
   });
+
+  function getTotalExistingImages(numberOfNewlySelectedImage: number) {
+    const existingImagesCount =
+      productDetails?.images?.filter((img) => !isImageDeleted(img)).length || 0;
+    return existingImagesCount + numberOfNewlySelectedImage;
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -67,9 +89,8 @@ const AddProductForm = () => {
       return;
     }
 
-    if (files.length > 4) {
-      setImageError("Maximum 4 images allowed");
-      setSelectedImages([]);
+    if (getTotalExistingImages(files.length) > 4) {
+      toast.error("Maximum 4 images allowed");
       return;
     }
 
@@ -103,9 +124,36 @@ const AddProductForm = () => {
     setValue("category", categoryId);
   };
 
+  const { data: productDetails, isFetching: fetchingProductDetails } =
+    useQuery<Product>({
+      queryKey: ["product", productId],
+      queryFn: async () => {
+        return (await http.get(`/product/${productId}`)).data;
+      },
+      enabled: !!productId,
+    });
+
+  useEffect(() => {
+    if (productDetails && !fetchingProductDetails) {
+      reset({
+        name: productDetails.name,
+        description: productDetails.description,
+        price: productDetails.price,
+        category: productDetails.category,
+        quantity: productDetails.quantity,
+        featured: productDetails.featured,
+      });
+      setSelectedCategoryId(productDetails.category);
+    }
+  }, [productDetails, fetchingProductDetails]);
+
   const onSubmit = async (data: AddProductSchema) => {
     // Validate images before submission
-    if (selectedImages.length < 1) {
+    if (
+      selectedImages.length +
+        (productDetails?.images.filter((img) => !img.deleted).length || 0) <
+      1
+    ) {
       toast.error("Please select at least 1 image");
       return;
     }
@@ -115,16 +163,54 @@ const AddProductForm = () => {
 
     // Append form fields
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value.toString());
+      const formValue =
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : value.toString();
+      formData.append(key, formValue);
     });
+
+    if (productId) {
+      formData.append(
+        "images",
+        JSON.stringify([
+          ...(productDetails?.images.filter((img) => !isImageDeleted(img)) ||
+            []),
+          ...existingDeletedImages,
+        ])
+      );
+    }
 
     // Append images
     selectedImages.forEach((image) => {
       formData.append("images", image);
     });
 
+    if (ogImage) {
+      formData.append("ogImage", ogImage);
+    }
+
     mutate(formData);
   };
+
+  function removeExistingImage(image: Image) {
+    setExistingDeletedImages((prev) => [...prev, { ...image, deleted: true }]);
+  }
+
+  function isImageDeleted(image: Image) {
+    return existingDeletedImages.some(
+      (img) => img.public_id === image.public_id && img.deleted
+    );
+  }
+
+  function restoreImage(image: Image) {
+    setExistingDeletedImages((prev) =>
+      prev.filter((img) => img.public_id !== image.public_id)
+    );
+  }
+
+  if (fetchingProductDetails && productId)
+    return <Loader message="Loading product details..." />;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -137,7 +223,7 @@ const AddProductForm = () => {
           type="text"
           id="name"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        />{" "}
         <FormError message={errors.name?.message} />
       </div>
 
@@ -170,8 +256,11 @@ const AddProductForm = () => {
       </div>
 
       <div>
+        <Label htmlFor="price" className="block text-sm font-medium mb-1">
+          Category
+        </Label>
         <SelectCategory
-          categories={categories}
+          categories={categories?.items || []}
           setCategory={handleCategorySelect}
           selectedCategoryId={selectedCategoryId}
           isLoading={fetchingCategories}
@@ -210,7 +299,46 @@ const AddProductForm = () => {
         </p>
 
         {imageError && <FormError message={imageError} />}
-
+        {productDetails?.images?.length &&
+          productDetails?.images.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm font-medium mb-2">Existing Images:</p>
+              <div className="grid grid-cols-3 gap-2">
+                {productDetails.images
+                  .filter((img) => !img.deleted)
+                  .map((imgUrl, index) => (
+                    <div key={index} className="relative">
+                      {!isImageDeleted(imgUrl) ? (
+                        <DeleteImageConfirmation
+                          image={imgUrl}
+                          onRemove={(image) => {
+                            removeExistingImage(image);
+                          }}
+                        />
+                      ) : (
+                        <div className="flex absolute top-2 right-2 gap-2">
+                          <div className="px-2 py-1 rounded-full text-sm border border-red-600 bg-red-100 text-red-600">
+                            Image Deleted
+                          </div>
+                          <button
+                            className="flex gap-2 text-sm border hover:bg-green-600 hover:text-white transition-colors duration-200 border-green-600 items-center px-2 py-1 rounded-full bg-green-100 text-green-600"
+                            onClick={() => restoreImage(imgUrl)}
+                          >
+                            <PiArrowCounterClockwise className="inline-block mr-1" />
+                            <span>Restore</span>
+                          </button>
+                        </div>
+                      )}
+                      <img
+                        src={imgUrl.url}
+                        alt={`Product Image ${index + 1}`}
+                        className="w-full h-24 object-contain rounded border"
+                      />
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         {selectedImages.length > 0 && (
           <div className="mt-2">
             <p className="text-sm font-medium mb-2">Selected Images:</p>
@@ -222,13 +350,10 @@ const AddProductForm = () => {
                     alt={`Preview ${index + 1}`}
                     className="w-full h-24 object-cover rounded border"
                   />
-                  <button
-                    type="button"
+                  <PiXCircleBold
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
-                  >
-                    ×
-                  </button>
+                    className="absolute cursor-pointer hover:scale-105 transition-all duration-200 top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                  />
                   <p className="text-xs text-gray-600 mt-1 truncate">
                     {image.name}
                   </p>
@@ -252,12 +377,62 @@ const AddProductForm = () => {
       </div>
       <FormError message={errors.featured?.message} />
 
+      <h2 className="font-semibold text-xl my-4">Seo Details</h2>
+      <div className="grid grid-cols-1 gap-4">
+        <Label className="block text-gray-900">SEO Title/Name</Label>
+        <Input
+          {...register("seo.name")}
+          type="text"
+          id="seo-name"
+          placeholder="SEO Name"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Label className="block text-gray-900">Seo Description</Label>
+        <Textarea
+          {...register("seo.description")}
+          id="seo-description"
+          placeholder="SEO Description"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <h2 className="font-semibold text-lg">OG (Open Graph Details)</h2>
+        <Label className="block text-gray-900">OG Title</Label>
+        <Input
+          {...register("seo.og.name")}
+          type="text"
+          id="seo-og-name"
+          placeholder="OG Name"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Label className="block text-gray-900">OG Description</Label>
+        <Textarea
+          {...register("seo.og.description")}
+          id="seo-og-description"
+          placeholder="OG Description"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        {/* TODO: enable later if needed */}
+        {/* <Label className="block text-gray-900">OG Image</Label>
+        <Input
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              setOgImage(e.target.files[0]);
+            }
+          }}
+          type="file"
+          id="seo-og-image"
+          placeholder="OG Image URL"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        /> */}
+      </div>
       <Button
         type="submit"
         disabled={status === "pending"}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
       >
-        {status === "pending" ? "Adding Product..." : "Add Product"}
+        {status === "pending"
+          ? "Adding Product..."
+          : `${productId ? "Save Changes" : "Add Product"}`}
       </Button>
     </form>
   );
