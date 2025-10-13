@@ -20,8 +20,8 @@ export default function FooterSection() {
         "Awards",
         "Our Mission", 
         "Privacy Policy",
-        "Press Release",
-        "Hire Me",
+       
+    
         "Affiliates And Creators"
       ]
     },

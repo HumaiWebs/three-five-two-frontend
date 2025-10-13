@@ -14,7 +14,7 @@ export default function ContactPage() {
 
   const backgroundStyle = useMemo(
     () => ({
-      backgroundImage: "url('/luxuary-clothes.jpg')",
+      backgroundImage: "url('/product-bg.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
@@ -36,7 +36,7 @@ export default function ContactPage() {
         title="Contact Us"
         subtitle="We’d Love to Hear from You"
         description="At Three Five Two, every conversation is part of the craft. Whether you’re seeking a bespoke appointment or have a general enquiry, our team is ready to assist."
-        backgroundImage="/hero-image2.jpg"
+        backgroundImage="/luxuary-clothes.jpg"
         breadcrumbs={["Home", "Contact"]}
       />
 
