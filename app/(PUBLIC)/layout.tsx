@@ -7,7 +7,6 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <CartProvider>
-        {" "}
         <Header />
         {children}
         <FooterSection />
