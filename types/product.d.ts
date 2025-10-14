@@ -1,3 +1,5 @@
+import { User } from "@/store/AuthProvider";
+
 export type Category = {
   _id: string;
   _id: string;
@@ -19,6 +21,13 @@ export type GetPagedResponse<T> = {
   pages: number;
 };
 
+export type ProductReview = {
+  _id: string;
+  rating: number;
+  comment: string;
+  user: Partial<User>;
+}
+
 export interface Product {
   _id: string;
   name: string;
@@ -32,6 +41,7 @@ export interface Product {
   isActive: boolean;
   deleted: boolean;
   featured: boolean;
+  reviews: ProductReview[];
   createdAt: Date;
   updatedAt: Date;
   __v: number;

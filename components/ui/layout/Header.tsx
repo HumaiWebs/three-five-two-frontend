@@ -5,6 +5,7 @@ import { MdAccountCircle } from "react-icons/md";
 
 import Link from "next/link";
 import CartButton from "../CartButton";
+import { PiUserBold } from "react-icons/pi";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,6 +87,9 @@ export default function Header() {
 
             {/* User Icon - A */}
             <CartButton />
+
+            {/* {Account Button} */}
+            <PiUserBold size={24} className="text-gold cursor-pointer" />
 
             {/* Mobile Menu Button */}
             <button
