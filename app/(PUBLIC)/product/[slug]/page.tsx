@@ -1,9 +1,7 @@
 import {
   getProductBySlug,
-  getSimmilarProducts,
 } from "@/actions/product.actions";
 import SimmilarProducts from "@/components/product/SimmilarProducts";
-import FeaturedProductsGrid from "@/components/ui/layout/FeaturedProductsGrid";
 import ProductsGridLoader from "@/components/ui/layout/ProductsGridLoader";
 import Image from "next/image";
 import React, { Suspense } from "react";
