@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -42,11 +41,16 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  
+
   /* Golden color palette */
   --color-gold: var(--gold);
   --color-gold-dark: var(--gold-dark);
   --color-gold-light: var(--gold-light);
+
+  /* breakpoints */
+  --breakpoint-ssm: 500px;
+  --breakpoint-xsm: 400px;
+  --breakpoint-s8p: 360px;
 }
 
 :root {
@@ -63,26 +67,26 @@
   --secondary-foreground: oklch(0.141 0.005 285.823);
   --muted: oklch(0.967 0.001 286.375);
   --muted-foreground: oklch(0.552 0.016 285.938);
-  
+
   /* Golden accent colors - Using #cda96f */
   --gold: #cda96f;
   --gold-dark: #b8945a;
   --gold-light: #e0c9a0;
   --accent: var(--gold);
   --accent-foreground: oklch(0.141 0.005 285.823);
-  
+
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.705 0.015 286.067);
-  
+
   /* Chart colors with gold */
   --chart-1: var(--gold);
   --chart-2: #d4b78a;
   --chart-3: #bb9d6c;
   --chart-4: oklch(0.8 0.01 286);
   --chart-5: oklch(0.9 0.005 286);
-  
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.141 0.005 285.823);
   --sidebar-primary: oklch(0.141 0.005 285.823);
@@ -106,23 +110,23 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
   --muted-foreground: oklch(0.705 0.015 286.067);
-  
+
   /* Golden colors for dark mode */
   --accent: var(--gold);
   --accent-foreground: oklch(0.985 0 0);
-  
+
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.552 0.016 285.938);
-  
+
   /* Chart colors for dark mode with gold */
   --chart-1: var(--gold);
   --chart-2: #d4b78a;
   --chart-3: #bb9d6c;
   --chart-4: oklch(0.4 0.01 286);
   --chart-5: oklch(0.3 0.005 286);
-  
+
   --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.985 0 0);
@@ -141,59 +145,63 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Custom font styles for elegance */
   .font-elegant {
-    font-family: 'Georgia', 'Times New Roman', serif;
+    font-family: "Georgia", "Times New Roman", serif;
   }
-  
+
   /* Custom spacing for fashion layout */
   .section-spacing {
     @apply py-16 px-6;
   }
-  
+
   /* Product card styles */
   .product-card {
     @apply bg-card border border-border rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg;
   }
-  
+
   /* Button styles with gold */
   .btn-primary {
     @apply bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium transition-colors hover:bg-primary/90;
   }
-  
+
   .btn-outline {
     @apply border border-primary text-primary bg-transparent px-6 py-3 rounded-md font-medium transition-colors hover:bg-primary hover:text-primary-foreground;
   }
-  
+
   .btn-gold {
     @apply bg-gold text-white px-6 py-3 rounded-md font-medium transition-colors hover:bg-gold-dark;
   }
-  
+
   .btn-gold-outline {
     @apply border border-gold text-gold bg-transparent px-6 py-3 rounded-md font-medium transition-colors hover:bg-gold hover:text-white;
   }
-  
+
   /* Navigation styles */
   .nav-link {
     @apply text-foreground/80 hover:text-gold transition-colors font-medium;
   }
-  
+
   /* Hero section gradient */
   .hero-gradient {
-    background: linear-gradient(135deg, oklch(0.141 0.005 285.823) 0%, oklch(0.21 0.006 285.885) 100%);
+    background: linear-gradient(
+      135deg,
+      oklch(0.141 0.005 285.823) 0%,
+      oklch(0.21 0.006 285.885) 100%
+    );
   }
-  
+
   /* Text emphasis with gold */
   .text-emphasis {
     @apply text-gold font-semibold;
   }
-  
+
   /* Golden divider */
   .divider-gold {
     @apply w-12 h-0.5 bg-gold my-4;
   }
-  
+
   /* Golden badge */
   .badge-gold {
     @apply bg-gold text-white px-3 py-1 rounded-full text-sm font-medium;
@@ -205,48 +213,48 @@
   .text-gold {
     color: var(--gold);
   }
-  
+
   .bg-gold {
     background-color: var(--gold);
   }
-  
+
   .border-gold {
     border-color: var(--gold);
   }
-  
+
   .hover\:text-gold:hover {
     color: var(--gold);
   }
-  
+
   .hover\:bg-gold:hover {
     background-color: var(--gold);
   }
-  
+
   .hover\:border-gold:hover {
     border-color: var(--gold);
   }
-  
+
   .text-gold-dark {
     color: var(--gold-dark);
   }
-  
+
   .bg-gold-dark {
     background-color: var(--gold-dark);
   }
-  
+
   .text-gold-light {
     color: var(--gold-light);
   }
-  
+
   .bg-gold-light {
     background-color: var(--gold-light);
   }
-  
+
   /* Golden gradients */
   .gradient-gold {
     background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
   }
-  
+
   .gradient-gold-subtle {
     background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%);
   }
@@ -279,7 +287,12 @@
 
 .animate-shimmer {
   animation: shimmer 2s infinite linear;
-  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold-light),
+    transparent
+  );
   background-size: 200px 100%;
 }
 
@@ -305,8 +318,9 @@
   .section-spacing {
     @apply py-12 px-4;
   }
-  
-  .btn-gold, .btn-gold-outline {
+
+  .btn-gold,
+  .btn-gold-outline {
     @apply px-4 py-2 text-sm;
   }
 }

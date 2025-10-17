@@ -24,22 +24,22 @@ const ProductDetailsPage = async ({ params }: Props) => {
   }
 
   return (
-    <main className="flex-1 mt-16 max-w-7xl w-full py-8 px-8 mx-auto">
+    <main className="flex-1 mt-16 max-w-7xl w-full py-4 ssm:py-8 px-4 ssm:px-8 mx-auto">
       <BreadCrumb />
-      <div className="flex gap-16 items-start mt-5">
+      <div className="flex max-md:flex-col gap-4 sm:gap-16 items-start mt-5">
         <ProductImages images={product.images} productName={product.name} />
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           {product.category && (
             <div className="border text-sm max-w-max border-gray-100 text-gray-700 bg-gray-50 px-3 py-1 rounded-full">
               {product.category.name}
             </div>
           )}
-          <h1 className="text-3xl font-bold mt-2 mb-4">{product.name}</h1>
+          <h1 className="text-2xl xsm:text-3xl font-bold mt-2 mb-4">{product.name}</h1>
           <ProductRatting rating={3} />
           <div className="text-3xl font-semibold text-gold my-4">
             £{product.price}
           </div>
-          <button className="bg-gold text-white px-6 py-3 rounded-md hover:bg-yellow-600 transition">
+          <button className="bg-gold text-white px-3 py-1.5 xsm:px-6 xsm:py-3 rounded-md hover:bg-yellow-600 transition">
             Add to Cart
           </button>{" "}
           <p className="font-semibold text-lg mt-4">About this product</p>
@@ -50,13 +50,13 @@ const ProductDetailsPage = async ({ params }: Props) => {
       </div>
 
       <div className="my-8 border-t border-gray-200">
-        <h2 className="mb-4 mt-4 text-2xl font-semibold text-amber-600">
+        <h2 className="mb-4 mt-4 text-xl xsm:text-2xl font-semibold text-amber-600">
           Product Reviews
         </h2>
         <ProductReviews reviews={product.reviews} />
       </div>
 
-      <h1 className="mb-4 mt-16 text-2xl font-semibold text-amber-600">
+      <h1 className="mb-4 mt-16 text-xl xsm:text-2xl font-semibold text-amber-600">
         Explore simmilar products
       </h1>
       <Suspense fallback={<ProductsGridLoader />}>

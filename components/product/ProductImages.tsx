@@ -8,8 +8,8 @@ type Props = {
 
 const ProductImages = ({ images, productName }: Props) => {
   return (
-    <div className="flex w-1/2 gap-2 items-start">
-      <div className="border h-[400px] flex-1 border-gray-100 w-1/2 bg-gray-50 flex justify-center items-center p-4 rounded-md">
+    <div className="flex max-sm:flex-col w-full md:w-1/2 gap-2 items-start">
+      <div className="border h-[400px] max-sm:w-full max-md:flex-1 min-w-[300px] lg:min-w-[400px] flex-1 border-gray-100 w-1/2 bg-gray-50 flex justify-center items-center p-4 rounded-md">
         <Image
           src={`${images?.[0]?.url || "/placeholder.png"}`}
           className="rounded-md"

@@ -9,7 +9,7 @@ const ProductReviews = ({ reviews }: Props) => {
   return (
     <div>
       {reviews.length === 0 ? (
-        <div>No reviews yet.</div>
+        <div className="w-full text-center text-gray-400">No reviews yet.</div>
       ) : (
         reviews.map((review) => (
           <div key={review._id}>
