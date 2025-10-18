@@ -1,11 +1,10 @@
 "use client";
-import { FaCartArrowDown, FaSearch, FaShoppingCart } from "react-icons/fa";
+import {FaSearch } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import { MdAccountCircle } from "react-icons/md";
 
 import Link from "next/link";
 import CartButton from "../CartButton";
-import { PiUserBold } from "react-icons/pi";
+import Account from "@/components/header/Account";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -89,7 +88,7 @@ export default function Header() {
             <CartButton />
 
             {/* {Account Button} */}
-            <PiUserBold size={24} className="text-gold cursor-pointer" />
+            <Account />
 
             {/* Mobile Menu Button */}
             <button

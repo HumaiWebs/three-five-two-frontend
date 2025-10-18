@@ -22,7 +22,7 @@ const LoginPage = () => {
       if (response.success) {
         toast.success("Logged in successfully");
         login(response.user);
-        router.push("/admin");
+        router.push(response.user.role ==='buyer'?"/":"/admin");
       } else {
         toast.error(response.message || "Something went wrong");
       }

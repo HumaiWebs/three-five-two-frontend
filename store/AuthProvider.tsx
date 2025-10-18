@@ -23,6 +23,7 @@ export type User = {
   _id: string;
   name: string;
   email: string;
+  role: 'admin'|'buyer'
 };
 
 export type AuthContext = {
@@ -105,7 +106,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           if (check_auth_response.success) {
             setUser(check_auth_response.user);
             if (isAuthPage()) {
-              router.push("/board");
+              router.push(check_auth_response.user.role ==='buyer'?"/":"/admin");
             }
           } else {
             localStorage.removeItem("user");
