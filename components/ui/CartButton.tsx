@@ -7,7 +7,7 @@ import { useCart } from "@/app/(PUBLIC)/cart/CartContext";
 export default function CartButton() {
   const { cartItems } = useCart();
 
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalItems = cartItems?.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <Link href="/cart" className="relative inline-flex items-center">

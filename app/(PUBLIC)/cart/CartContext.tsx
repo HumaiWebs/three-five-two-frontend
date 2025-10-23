@@ -8,8 +8,12 @@ import {
   useEffect,
   ReactNode,
 } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { http } from "@/lib/httpClient";
+import { useAuth } from "@/store/AuthProvider";
+import { getGuestUserId } from "@/lib/guestUserId";
 
-type CartItem = {
+export type CartItem = {
   _id: string | number;
   name: string;
   price: number;
@@ -29,15 +33,49 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
+  const { user } = useAuth();
   useEffect(() => {
     const stored = localStorage.getItem("cart");
-    if (stored) setCartItems(JSON.parse(stored));
+    if (stored && stored !== undefined && stored !== "undefined")
+      setCartItems(JSON.parse(stored));
   }, []);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
+
+  const {
+    data: userCart,
+    isFetching: fetchingUserCart,
+    refetch: fetchUserCart,
+  } = useQuery({
+    queryKey: ["userCartItems"],
+    queryFn: async () => {
+      const userId = user?._id || getGuestUserId();
+      return (await http.get(`cart/${userId}`)).data;
+    },
+    enabled: false,
+  });
+
+  useEffect(() => {
+    fetchUserCart();
+  }, [user]);
+
+  useEffect(() => {
+    if (userCart && userCart.success && !fetchingUserCart) {
+      setCartItems(
+        userCart?.data?.items?.map((item: any) => {
+          return {
+            _id: item.product._id,
+            name: item.product.name,
+            price: item.product.price,
+            image: item.product.images[0]?.url,
+            quantity: item.quantity,
+          };
+        })
+      );
+    }
+  }, [userCart, fetchingUserCart]);
 
   const addToCart = (item: CartItem) => {
     setCartItems((prev) => {

@@ -6,6 +6,7 @@ import ProductReviews from "@/components/product/ProductReviews";
 import SimmilarProducts from "@/components/product/SimmilarProducts";
 import ProductsGridLoader from "@/components/ui/layout/ProductsGridLoader";
 import React, { Suspense } from "react";
+import AddToCart from "@/components/product/AddToCart";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -39,9 +40,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
           <div className="text-3xl font-semibold text-gold my-4">
             £{product.price}
           </div>
-          <button className="bg-gold text-white px-3 py-1.5 xsm:px-6 xsm:py-3 rounded-md hover:bg-yellow-600 transition">
-            Add to Cart
-          </button>{" "}
+        <AddToCart productId={product._id} />
           <p className="font-semibold text-lg mt-4">About this product</p>
           <p className="text-gray-700 mb-6">
             {product.description || "No description available."}
@@ -57,7 +56,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
       </div>
 
       <h1 className="mb-4 mt-16 text-xl xsm:text-2xl font-semibold text-amber-600">
-        Explore simmilar products
+        Explore similar products
       </h1>
       <Suspense fallback={<ProductsGridLoader />}>
         <SimmilarProducts product={product} />

@@ -38,9 +38,9 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
           {/* Logo - Left aligned */}
-          <div className="text-2xl font-normal text-white tracking-wider">
+          <Link href={'/'} className="text-2xl font-normal text-white tracking-wider">
             <img src="/logo-tra.png" alt="Logo" className="w-2xs" />
-          </div>
+          </Link>
 
           {/* Desktop Navigation - Centered with exact spacing */}
           <nav className="hidden lg:flex items-center space-x-10 absolute left-1/2 transform -translate-x-1/2">
