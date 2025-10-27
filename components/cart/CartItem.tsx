@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { type CartItem } from "./CartContext";
+import {type CartItem, useCart} from "../../store/CartContext";
 import Image from "next/image";
 import { useDebounceValue } from "usehooks-ts";
 import { useMutation } from "@tanstack/react-query";
 import { getGuestUserId } from "@/lib/guestUserId";
 import { http } from "@/lib/httpClient";
 import { PiMinus, PiPlus, PiSpinner } from "react-icons/pi";
+import RemoveCartItem from "@/components/cart/DeleteItem";
 
 type Props = {
   item: CartItem;
@@ -14,6 +15,7 @@ type Props = {
 const CartItem = ({ item }: Props) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const [changedQuantity, setChangedQuantity] = useDebounceValue(quantity, 500);
+  const {invalidateUserCart} = useCart();
 
   const { mutate: updateQuantity, status } = useMutation({
     mutationFn: async () => {
@@ -27,6 +29,11 @@ const CartItem = ({ item }: Props) => {
       ).data;
       return response;
     },
+      onSuccess: async (response) => {
+        if(response.success) {
+            invalidateUserCart();
+        }
+      }
   });
 
   useEffect(() => {
@@ -83,13 +90,7 @@ const CartItem = ({ item }: Props) => {
             )}
           </button>
         </div>
-
-        <button
-          onClick={() => {}}
-          className="bg-red-600 hover:bg-red-700 px-4 py-1 text-sm"
-        >
-          Remove
-        </button>
+        <RemoveCartItem itemId={item._id} itemName={item.name} />
       </div>
     </div>
   );

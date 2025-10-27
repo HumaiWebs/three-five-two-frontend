@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useCart } from "@/app/(PUBLIC)/cart/CartContext";
+import { useCart } from "@/store/CartContext";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
 

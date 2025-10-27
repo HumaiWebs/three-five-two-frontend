@@ -12,6 +12,7 @@ import { useAuth } from "@/store/AuthProvider";
 import { getGuestUserId } from "@/lib/guestUserId";
 import toast from "react-hot-toast";
 import { queryClient } from "@/store/ClientWrapper";
+import {useCart} from "@/store/CartContext";
 
 type Props = {
   productId: string;
@@ -19,6 +20,7 @@ type Props = {
 
 const AddToCart = ({ productId }: Props) => {
   const { user } = useAuth();
+  const {invalidateUserCart} = useCart();
   const [quantity, setQuantity] = useState(1);
   const quantityInputWidth = quantity.toString().length + 2;
 
@@ -50,7 +52,7 @@ const AddToCart = ({ productId }: Props) => {
     onSuccess(response) {
       if (response.success) {
         toast.success(response.message);
-        queryClient.invalidateQueries({ queryKey: ["userCartItems"] });
+        invalidateUserCart()
       } else {
         toast.error(response.message);
       }
