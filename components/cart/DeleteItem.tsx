@@ -2,10 +2,8 @@ import {useAuth} from "@/store/AuthProvider";
 import {getGuestUserId} from "@/lib/guestUserId";
 import {useMutation} from "@tanstack/react-query";
 import {http} from "@/lib/httpClient";
-import Loader from "@/components/global/Loader";
 import {useState} from "react";
 import toast from "react-hot-toast";
-import {queryClient} from "@/store/ClientWrapper";
 import {useCart} from "@/store/CartContext";
 import ConfirmationModal from "@/components/global/ConfirmationModal";
 
@@ -43,6 +41,7 @@ const RemoveCartItem = ({itemId, itemName}: { itemId: string | number, itemName:
             message={<p>
                 Are you sure you want to remove <strong>{itemName}</strong> from your cart?
             </p>}
+            open={isModalOpen}
             onConfirm={() => {
                 deleteItem();
                 setIsModalOpen(false);

@@ -21,7 +21,7 @@ const ClearCart = () => {
         onSuccess: (response) => {
             if (response.success) {
                 invalidateUserCart();
-            }else{
+            } else {
                 toast.error(response.message);
             }
         }
@@ -35,6 +35,7 @@ const ClearCart = () => {
         </button>
         {
             modalOpen && <ConfirmationModal
+                open={modalOpen}
                 isLoading={status === 'pending'}
                 message={<p>
                     Are you sure you want to clear your cart?

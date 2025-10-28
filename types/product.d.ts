@@ -7,6 +7,7 @@ export type Category = {
   description?: string;
   parent?: Category | null;
   level: number;
+  slug: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -26,7 +27,7 @@ export type ProductReview = {
   rating: number;
   comment: string;
   user: Partial<User>;
-}
+};
 
 export interface Product {
   _id: string;

@@ -1,37 +1,16 @@
-"use client";
-
-import { useState, useMemo } from "react";
 import Products from "@/components/ui/layout/Products";
 import ShopFilter from "@/components/ui/layout/ShopFilter";
 import CommonHeader from "@/components/ui/layout/CommonHeader";
+import { Suspense } from "react";
 
 export default function ShopPage() {
-  const [filters, setFilters] = useState<{
-    minPrice: string | number;
-    maxPrice: string | number;
-    types: string[];
-    collections: string[];
-    colors: string[];
-    fabrics: string[];
-  }>({
-    minPrice: "",
-    maxPrice: "",
-    types: [],
-    collections: [],
-    colors: [],
-    fabrics: [],
-  });
-
-  const productsBackgroundStyle = useMemo(
-    () => ({
-      backgroundImage: "url('/product-bg.jpg')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundAttachment: "fixed",
-    }),
-    []
-  );
+  const productsBackgroundStyle = {
+    backgroundImage: "url('/product-bg.jpg')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundAttachment: "fixed",
+  };
 
   return (
     <main className="bg-black">
@@ -66,13 +45,15 @@ export default function ShopPage() {
           {/* Layout */}
           <div className="flex flex-col lg:flex-row">
             {/* Sidebar Filter */}
-            <div className="lg:max-w-3xl">
-              <ShopFilter filters={filters} onFilterChange={setFilters} />
-            </div>
+            <Suspense>
+              <div className="lg:max-w-3xl">
+                <ShopFilter />
+              </div>
+            </Suspense>
 
             {/* Products */}
             <div className="flex-1 w-7xl">
-              <Products filters={filters} />
+              <Products />
             </div>
           </div>
         </div>

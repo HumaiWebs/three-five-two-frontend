@@ -29,7 +29,10 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     });
 
     if (!response.ok) {
-      console.log(`Failed to fetch product with slug: ${slug}`, response.statusText);
+      console.log(
+        `Failed to fetch product with slug: ${slug}`,
+        response.statusText
+      );
       return null;
     }
 
@@ -47,20 +50,53 @@ export async function getSimmilarProducts(
 ): Promise<GetPagedResponse<Product> | null> {
   try {
     const response = await fetch(
-      `${baseURL}/product/simmilar/${productId}?category=${categoryId}&name=${encodeURIComponent(name)}`,
+      `${baseURL}/product/simmilar/${productId}?category=${categoryId}&name=${encodeURIComponent(
+        name
+      )}`,
       {
         cache: "no-store",
       }
     );
 
     if (!response.ok) {
-      console.log(`Failed to fetch similar products for product ID: ${productId}`, response.statusText);
+      console.log(
+        `Failed to fetch similar products for product ID: ${productId}`,
+        response.statusText
+      );
       return null;
     }
 
     return await response.json();
   } catch (error) {
     console.error(`Fetch failed for similar products of ${productId}:`, error);
+    return null;
+  }
+}
+
+async function getShopProducts(
+  filters: Record<string, string | number>
+): Promise<GetPagedResponse<Product> | null> {
+  try {
+    const queryParams = new URLSearchParams();
+    for (const key in filters) {
+      queryParams.append(key, String(filters[key]));
+    }
+
+    const response = await fetch(
+      `${baseURL}/product?${queryParams.toString()}`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      console.log("Failed to fetch shop products:", response.statusText);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch failed for shop products:", error);
     return null;
   }
 }

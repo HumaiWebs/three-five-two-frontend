@@ -1,20 +1,14 @@
-"use client";
-
 import React from "react";
 import Image from "next/image";
-import { useCart } from "@/store/CartContext";
 import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
 
-type ProductFilters = {
-  minPrice?: string;
-  maxPrice?: string;
-  types?: string[];
-  collections?: string[];
+type Props = {
+  searchParams?: Promise<Record<string, string | string[]>>;
 };
 
-export default function Products({ filters = {} as ProductFilters }) {
-  const { addToCart } = useCart();
+export default async function Products({ searchParams }: Props) {
+  const query = await searchParams;
+  
 
   const products = [
     {
@@ -67,42 +61,11 @@ export default function Products({ filters = {} as ProductFilters }) {
     },
   ];
 
-  // ✅ Apply filters
-  const filteredProducts = products.filter((p) => {
-    const minPrice = filters.minPrice ? parseFloat(filters.minPrice) : null;
-    const maxPrice = filters.maxPrice ? parseFloat(filters.maxPrice) : null;
-
-    const priceCheck =
-      (!minPrice || p.price >= minPrice) && (!maxPrice || p.price <= maxPrice);
-    const typeCheck =
-      !filters.types ||
-      filters.types.length === 0 ||
-      filters.types.includes(p.type);
-    const collectionCheck =
-      !filters.collections ||
-      filters.collections.length === 0 ||
-      filters.collections.includes(p.collection);
-
-    return priceCheck && typeCheck && collectionCheck;
-  });
-
-  // ✅ Handle Add to Cart
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      _id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-    });
-    toast.success(`${product.name} added to cart`);
-  };
-
   return (
-    <section className="relative text-white px-8">
+    <section id="products-section" className="relative text-white px-8">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <div
               key={product.id}
               className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-2"
@@ -124,10 +87,7 @@ export default function Products({ filters = {} as ProductFilters }) {
                 <p className="text-gold text-lg font-light">£{product.price}</p>
 
                 <div className="flex justify-center gap-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                  <Button
-                    onClick={() => handleAddToCart(product)}
-                    className="border rounded-none border-gold text-gold bg-transparent hover:bg-gold hover:text-black text-sm tracking-widest"
-                  >
+                  <Button className="border rounded-none border-gold text-gold bg-transparent hover:bg-gold hover:text-black text-sm tracking-widest">
                     ADD TO CART
                   </Button>
                   <Button className="border rounded-none border-gray-700 text-gray-400 bg-transparent hover:border-gold hover:text-gold text-sm tracking-widest">
