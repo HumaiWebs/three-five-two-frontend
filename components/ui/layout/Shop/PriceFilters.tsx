@@ -1,19 +1,41 @@
 "use client";
 import React from "react";
 import { Button } from "../../button";
-import { useSearchParams } from "next/navigation";
-import { PiArrowCircleDownLeft } from "react-icons/pi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PiArrowCounterClockwise } from "react-icons/pi";
+import toast from "react-hot-toast";
 
 const PriceFilters = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [prices, setPrices] = React.useState({ min: "", max: "" });
 
   const priceMin = searchParams.get("priceMin");
   const priceMax = searchParams.get("priceMax");
 
-  const filtersApplies = priceMin !== null || priceMax !== null;
+  const filtersApplied = priceMin !== null || priceMax !== null;
 
-  function handleApply() {}
+  function handleApply() {
+    const maxPrice = prices.max ? parseFloat(prices.max) : null;
+    const minPrice = prices.min ? parseFloat(prices.min) : null;
+
+    if (maxPrice && minPrice && maxPrice < minPrice) {
+      toast.error("Max price cannot be less than Min price");
+      return;
+    }
+
+    if (minPrice || maxPrice) {
+      const params = new URLSearchParams();
+      if (minPrice) params.set("priceMin", minPrice.toString());
+      if (maxPrice) params.set("priceMax", maxPrice.toString());
+      router.push(`/shop?${params.toString()}`);
+    }
+  }
+
+  function clearFilters() {
+    router.push("/shop");
+  }
 
   return (
     <div className="mb-6">
@@ -33,12 +55,20 @@ const PriceFilters = () => {
           placeholder="Max"
           className="w-1/2 p-2 border border-gray-600 bg-black text-white"
         />
-        <Button className="bg-gold text-white rounded-none hover:bg-gold/80">
+        <Button
+          onClick={handleApply}
+          className="bg-gold text-white rounded-none hover:bg-gold/80"
+        >
           Apply
         </Button>
-        <Button className="bg-gold text-white rounded-none hover:bg-gold/80">
-          <PiArrowCircleDownLeft />
-        </Button>
+        {filtersApplied ? (
+          <Button
+            onClick={clearFilters}
+            className="bg-gold text-white rounded-none hover:bg-gold/80"
+          >
+            <PiArrowCounterClockwise />
+          </Button>
+        ) : null}
       </div>
     </div>
   );

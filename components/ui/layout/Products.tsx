@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { getShopProducts } from "@/actions/product.actions";
+import Link from "next/link";
 
 type Props = {
   searchParams?: Promise<Record<string, string | string[]>>;
@@ -8,71 +10,23 @@ type Props = {
 
 export default async function Products({ searchParams }: Props) {
   const query = await searchParams;
-  
 
-  const products = [
-    {
-      id: 1,
-      name: "Double Enriched Blazar",
-      price: 53,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 2,
-      name: "Retro Style Blazar",
-      price: 58,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/retro-style-blazar.png",
-    },
-    {
-      id: 3,
-      name: "Fashion Fluid Business Blazar",
-      price: 68,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 4,
-      name: "Double Breasted Blazer",
-      price: 80,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/retro-style-blazar.png",
-    },
-    {
-      id: 5,
-      name: "Wedding Style Blazer",
-      price: 75,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/double-enriched-blazar.png",
-    },
-    {
-      id: 6,
-      name: "Fashion Plaid Business Blazer",
-      price: 88,
-      type: "Blazer",
-      collection: "Blazer",
-      image: "/retro-style-blazar.png",
-    },
-  ];
+  const products = await getShopProducts(
+    query as Record<string, string | number>
+  );
 
   return (
     <section id="products-section" className="relative text-white px-8">
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
+          {products?.items.map((product) => (
             <div
-              key={product.id}
+              key={product._id}
               className="group relative bg-transparent border border-gray-700 hover:border-gold transition-all duration-300 p-2"
             >
               <div className="relative h-80 lg:h-[28rem] mb-6 overflow-hidden">
                 <Image
-                  src={product.image}
+                  src={product.images[0].url || ""}
                   alt={product.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -90,9 +44,12 @@ export default async function Products({ searchParams }: Props) {
                   <Button className="border rounded-none border-gold text-gold bg-transparent hover:bg-gold hover:text-black text-sm tracking-widest">
                     ADD TO CART
                   </Button>
-                  <Button className="border rounded-none border-gray-700 text-gray-400 bg-transparent hover:border-gold hover:text-gold text-sm tracking-widest">
+                  <Link
+                    href={`/product/${product.slug}`}
+                    className="border rounded-none px-2 border-gray-700 text-gray-400 bg-transparent hover:border-gold hover:text-gold text-sm tracking-widest"
+                  >
                     VIEW
-                  </Button>
+                  </Link>
                 </div>
               </div>
 

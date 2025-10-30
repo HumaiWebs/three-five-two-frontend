@@ -3,7 +3,11 @@ import ShopFilter from "@/components/ui/layout/ShopFilter";
 import CommonHeader from "@/components/ui/layout/CommonHeader";
 import { Suspense } from "react";
 
-export default function ShopPage() {
+type Props = {
+  searchParams?: Promise<Record<string, string | string[]>>;
+};
+
+export default function ShopPage({searchParams}:Props) {
   const productsBackgroundStyle = {
     backgroundImage: "url('/product-bg.jpg')",
     backgroundSize: "cover",
@@ -53,7 +57,7 @@ export default function ShopPage() {
 
             {/* Products */}
             <div className="flex-1 w-7xl">
-              <Products />
+              <Products searchParams={searchParams} />
             </div>
           </div>
         </div>

@@ -73,19 +73,24 @@ export async function getSimmilarProducts(
   }
 }
 
-async function getShopProducts(
+export async function getShopProducts(
   filters: Record<string, string | number>
 ): Promise<GetPagedResponse<Product> | null> {
   try {
     const queryParams = new URLSearchParams();
     for (const key in filters) {
-      queryParams.append(key, String(filters[key]));
+      const value = filters[key];
+      if (Array.isArray(value)) {
+      value.forEach(item => queryParams.append(key, String(item)));
+      } else {
+      queryParams.append(key, String(value));
+      }
     }
 
     const response = await fetch(
       `${baseURL}/product?${queryParams.toString()}`,
       {
-        cache: "no-store",
+      cache: "no-store",
       }
     );
 
